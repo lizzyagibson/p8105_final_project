@@ -303,7 +303,8 @@ school_data &lt;- left_join(demo_data, score_data, by = c(&quot;dbn&quot;))
 all_data &lt;- left_join(school_data, lead_data, by = &quot;school_number&quot;) %&gt;% 
   filter(mean_scale_score != &quot;s&quot;) %&gt;% 
   mutate(mean_scale_score = as.numeric(mean_scale_score),
-         lead_percent = number_of_outlets_result_greater / number_of_outlets) %&gt;% 
+         lead_percent = number_of_outlets_result_greater / number_of_outlets,
+         minority = ifelse(white &gt; 0.5, &quot;White&quot;, &quot;Minority&quot;)) %&gt;% 
   select(-school_name.y)</code></pre>
 </div>
 
