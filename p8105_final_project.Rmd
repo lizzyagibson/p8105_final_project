@@ -101,7 +101,11 @@ all_data <- left_join(school_data, lead_data, by = "school_number") %>%
   mutate(mean_scale_score = as.numeric(mean_scale_score),
          lead_percent = number_of_outlets_result_greater / number_of_outlets,
          minority = ifelse(white > 0.5, "White", "Minority")) %>% 
-  select(-school_name.y)
+  select(-school_name.y) %>% 
+  mutate(location = str_replace(location, "POINT \\(", ""),
+         location = str_replace(location, "\\)", "")) %>% 
+  separate(location, into = c("latitude", "longitude"), sep = " ")
+
 ```
 
 
