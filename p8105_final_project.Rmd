@@ -85,11 +85,13 @@ demo_data <- GET("https://data.cityofnewyork.us/resource/vjn2-hei2.csv", query =
 score_data <- GET("https://data.cityofnewyork.us/resource/stka-4ti9.csv", query = list(`$limit` = 25000)) %>% 
   content("parsed") %>% 
   clean_names() %>% 
-  filter(year == 2017) %>% 
+  filter(year == 2017 & grade == "All Grades") %>% 
   select(dbn, school_name, grade, mean_scale_score)
 ```
 
-**Merge data**
+* School data is restricted to average scores for all grades. This way, schools do not repeat.
+
+## Merge data
 
 ```{r merge, message = FALSE, warning = FALSE}
 #merge demographic characteristics with math scores
@@ -101,12 +103,22 @@ all_data <- left_join(school_data, lead_data, by = "school_number") %>%
   mutate(mean_scale_score = as.numeric(mean_scale_score),
          lead_percent = number_of_outlets_result_greater / number_of_outlets,
          minority = ifelse(white > 0.5, "White", "Minority")) %>% 
-  select(-school_name.y) %>% 
+  select(-school_name.y, -dbn) %>% 
   mutate(location = str_replace(location, "POINT \\(", ""),
          location = str_replace(location, "\\)", "")) %>% 
-  separate(location, into = c("latitude", "longitude"), sep = " ")
+  separate(location, into = c("latitude", "longitude"), sep = " ") %>% 
+  mutate(all_minority = ifelse(white > .5, "White", 
+                               ifelse(black > .5, "Black",
+                                      ifelse(asian > .5, "Asian",
+                                             ifelse(hispanic > .5, "Hispanic",
+                                                    ifelse(other_race > .5, "Other", "Minority"))))))
 ```
 
+## Data Dictionary
+
+* lead_percent = proportion of all outlets with lead level > 15 ppb
+* minority = "Minority" if > 50% Black, Asian, Hispanic, Other; "White" if > 50% white
+* all_minority = categorical, gives name of any race > .5
 
 
 

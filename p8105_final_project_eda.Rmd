@@ -22,10 +22,60 @@ library(forcats)
 
 ## Exploratory Data Analysis
 
-```{r}
-all_data %>% 
-  select(asian, black, english_language_learners, hispanic, other_race, poverty,
-         students_with_disabilities, white, school_number, grade, mean_scale_score,
-         any_lead_free_buildings, lead_percent, minority)
+```{r subset_data}
+eda_data <- all_data %>% 
+  select(school_number, english_language_learners, hispanic, other_race, poverty,
+         students_with_disabilities, white, asian, black, grade, mean_scale_score,
+         any_lead_free_buildings, lead_percent, minority, all_minority)
 ```
 
+### Lead and Poverty
+
+```{r poverty}
+summary(eda_data$lead_percent)
+summary(eda_data$poverty)
+
+eda_data %>% 
+  ggplot(aes(y = lead_percent, x = poverty)) + geom_point() + geom_smooth(method = "lm")
+
+summary(lm(lead_percent ~ poverty, eda_data))
+
+eda_chi_sq <- eda_data %>% 
+  mutate(poverty_bi = ifelse(poverty > median(poverty, na.rm = TRUE), 1, 0),
+         lead_bi = ifelse(lead_percent > median(lead_percent, na.rm = TRUE), 1, 0))
+
+chisq.test(eda_chi_sq$poverty_bi, eda_chi_sq$lead_bi)
+table(eda_chi_sq$poverty_bi, eda_chi_sq$lead_bi)
+
+```
+
+### Lead and Minority Status
+
+```{r poverty}
+summary(eda_data$lead_percent)
+table(eda_data$minority)
+table(eda_data$all_minority)
+
+eda_data %>%
+  group_by(minority) %>% 
+  summarize(lead_ave = mean(lead_percent, na.rm = TRUE)) %>% 
+  ggplot(aes(y = lead_ave, x = minority)) + geom_col()
+
+eda_data %>%
+  group_by(all_minority) %>% 
+  summarize(lead_ave = mean(lead_percent, na.rm = TRUE)) %>% 
+  ggplot(aes(y = lead_ave, x = all_minority)) + geom_col()
+
+eda_data %>%
+  mutate(black_maj = ifelse(black > .5, "Black", "Other")) %>% 
+  group_by(black_maj) %>% 
+  summarize(lead_ave = mean(lead_percent, na.rm = TRUE)) %>% 
+  ggplot(aes(y = lead_ave, x = black_maj)) + geom_col()
+
+summary(lm(lead_percent ~ minority, eda_data))
+
+summary(lm(lead_percent ~ all_minority, eda_data))
+
+t.test(lead_percent ~ minority, eda_data)
+
+```
