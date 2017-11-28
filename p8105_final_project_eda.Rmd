@@ -1,0 +1,31 @@
+---
+title: "Final Project EDA"
+author: "Ahlam Abuawad, Lizzy Gibson & Yanelli Nunez"
+date: "November 14, 2017"
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(janitor)
+library(rvest)
+library(httr)
+library(stringr)
+library(forcats)
+```
+
+## Exploratory Data Analysis
+
+```{r}
+all_data %>% 
+  select(asian, black, english_language_learners, hispanic, other_race, poverty,
+         students_with_disabilities, white, school_number, grade, mean_scale_score,
+         any_lead_free_buildings, lead_percent, minority)
+```
+

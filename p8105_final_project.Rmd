@@ -105,7 +105,6 @@ all_data <- left_join(school_data, lead_data, by = "school_number") %>%
   mutate(location = str_replace(location, "POINT \\(", ""),
          location = str_replace(location, "\\)", "")) %>% 
   separate(location, into = c("latitude", "longitude"), sep = " ")
-
 ```
 
 
