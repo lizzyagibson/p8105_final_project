@@ -63,7 +63,7 @@ demo_data <- GET("https://data.cityofnewyork.us/resource/vjn2-hei2.csv", query =
   select(dbn, school_name, asian, black, english_language_learners, 
          hispanic, other_race = other, poverty, students_with_disabilities,
          white) %>% 
-  mutate(asian = as.numeric(asian), asian = round(asian, 4),
+  mutate(asian = as.numeric(asian), asian = round(asian, 4), #convert proportions to numeric
          black = as.numeric(black), black = round(black, 4),
          english_language_learners = as.numeric(english_language_learners), 
          english_language_learners = round(english_language_learners, 4),
@@ -72,8 +72,8 @@ demo_data <- GET("https://data.cityofnewyork.us/resource/vjn2-hei2.csv", query =
          poverty = as.numeric(poverty), poverty = round(poverty, 4),
          white = as.numeric(white), white = round(white, 4),
          students_with_disabilities = as.numeric(students_with_disabilities), 
-         students_with_disabilities = round(students_with_disabilities, 4)) %>% 
-  mutate(school_number = str_replace(dbn, "^..", ""))
+         students_with_disabilities = round(students_with_disabilities, 4)) %>% # round proportions
+  mutate(school_number = str_replace(dbn, "^..", "")) #create school number to merge with lead data
 ```
 
 **Data from NYC Open Data [Website](https://data.cityofnewyork.us/Education/2013-2017-School-Math-Results-All/kha6-7i9i).**
@@ -85,7 +85,7 @@ demo_data <- GET("https://data.cityofnewyork.us/resource/vjn2-hei2.csv", query =
 score_data <- GET("https://data.cityofnewyork.us/resource/stka-4ti9.csv", query = list(`$limit` = 25000)) %>% 
   content("parsed") %>% 
   clean_names() %>% 
-  filter(year == 2017 & grade == "All Grades") %>% 
+  filter(year == 2017 & grade == "All Grades") %>% #so that testst scores are AFTER lead measurement
   select(dbn, school_name, grade, mean_scale_score)
 ```
 
@@ -101,17 +101,18 @@ school_data <- left_join(demo_data, score_data, by = c("dbn"))
 all_data <- left_join(school_data, lead_data, by = "school_number") %>% 
   filter(mean_scale_score != "s") %>% 
   mutate(mean_scale_score = as.numeric(mean_scale_score),
-         lead_percent = number_of_outlets_result_greater / number_of_outlets,
+         lead_percent = number_of_outlets_result_greater / number_of_outlets, #percent of outlets with lead
          minority = ifelse(white > 0.5, "White", "Minority")) %>% 
   select(-school_name.y, -dbn) %>% 
   mutate(location = str_replace(location, "POINT \\(", ""),
          location = str_replace(location, "\\)", "")) %>% 
-  separate(location, into = c("latitude", "longitude"), sep = " ") %>% 
-  mutate(all_minority = ifelse(white > .5, "White", 
-                               ifelse(black > .5, "Black",
-                                      ifelse(asian > .5, "Asian",
-                                             ifelse(hispanic > .5, "Hispanic",
-                                                    ifelse(other_race > .5, "Other", "Minority"))))),
+  separate(location, into = c("latitude", "longitude"), sep = " ") %>% #separate lat and long
+  mutate(largest = pmax(white, black, asian, hispanic, other_race)) %>% 
+  mutate(race = ifelse(largest == white, "White", #create categorical race category
+                      ifelse(largest == black, "Black",
+                             ifelse(largest == hispanic, "Hispanic",
+                                    ifelse(largest == asian, "Asian",
+                                           ifelse(largest == other_race, "Other", "Missing"))))),
          latitude = as.numeric(latitude),
          longitude = as.numeric(longitude))
 ```
@@ -120,7 +121,7 @@ all_data <- left_join(school_data, lead_data, by = "school_number") %>%
 
 * lead_percent = proportion of all outlets with lead level > 15 ppb
 * minority = "Minority" if > 50% Black, Asian, Hispanic, Other; "White" if > 50% white
-* all_minority = categorical, gives name of any race > .5
+* race = categorical, gives name of race variable with largest proportion
 
 
 
