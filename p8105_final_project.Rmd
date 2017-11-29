@@ -111,7 +111,9 @@ all_data <- left_join(school_data, lead_data, by = "school_number") %>%
                                ifelse(black > .5, "Black",
                                       ifelse(asian > .5, "Asian",
                                              ifelse(hispanic > .5, "Hispanic",
-                                                    ifelse(other_race > .5, "Other", "Minority"))))))
+                                                    ifelse(other_race > .5, "Other", "Minority"))))),
+         latitude = as.numeric(latitude),
+         longitude = as.numeric(longitude))
 ```
 
 ## Data Dictionary
