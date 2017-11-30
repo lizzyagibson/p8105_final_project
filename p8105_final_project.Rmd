@@ -115,6 +115,8 @@ all_data <- left_join(school_data, lead_data, by = "school_number") %>%
                                            ifelse(largest == other_race, "Other", "Missing"))))),
          latitude = as.numeric(latitude),
          longitude = as.numeric(longitude))
+
+write_csv(all_data, "./all_data.csv")
 ```
 
 ## Data Dictionary

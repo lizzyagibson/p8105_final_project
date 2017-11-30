@@ -18,86 +18,71 @@ library(rvest)
 library(httr)
 library(stringr)
 library(forcats)
+library(tableone)
+
+theme_set(theme_bw())
+theme_update(legend.position = "bottom")
 ```
 
 ## Exploratory Data Analysis
 
 ```{r subset_data}
+all_data <- read_csv("./all_data.csv")
+
 eda_data <- all_data %>% 
   select(school_number, english_language_learners, hispanic, other_race, poverty,
          students_with_disabilities, white, asian, black, grade, mean_scale_score,
-         any_lead_free_buildings, lead_percent, minority, all_minority)
+         any_lead_free_buildings, lead_percent, minority, race)
+
+write_csv(eda_data, "./eda_data.csv")
 ```
 
-### Lead and Poverty
+## Table One
+
+```{r}
+continuous <- c("english_language_learners", 
+                "poverty","students_with_disabilities", 
+                "mean_scale_score", "lead_percent")
+
+categorical <- c("any_lead_free_buildings")
+
+biomarkers <- c("lead_percent")
+
+table <- CreateTableOne(vars = continuous, strata = "race", data = eda_data, factorVars = categorical)
+print(table, showAllLevels = TRUE, nonnormal = biomarkers)
+
+```
+
+## Lead and Poverty
 
 ```{r poverty}
 summary(eda_data$lead_percent)
 summary(eda_data$poverty)
 
 eda_data %>% 
-  ggplot(aes(y = lead_percent, x = poverty)) + geom_point() + geom_smooth(method = "lm")
-
-summary(lm(lead_percent ~ poverty, eda_data))
-
-eda_chi_sq <- eda_data %>% 
-  mutate(poverty_bi = ifelse(poverty > mean(poverty, na.rm = TRUE), 1, 0),
-         lead_bi = ifelse(lead_percent > mean(lead_percent, na.rm = TRUE), 1, 0))
-
-chisq.test(eda_chi_sq$poverty_bi, eda_chi_sq$lead_bi)
-table(eda_chi_sq$poverty_bi, eda_chi_sq$lead_bi)
+  ggplot(aes(y = lead_percent, x = poverty)) + geom_hex() +
+  labs(x = "Percent of students in poverty", y = "Proportion of pipes with lead > 15 ppb",
+       title = "Poverty status and lead exposure")
 ```
 
-### Lead and Minority Status
+## Lead and Minority Status
 
 ```{r minority}
-summary(eda_data$lead_percent)
 table(eda_data$minority)
-table(eda_data$all_minority)
+table(eda_data$race)
 
 eda_data %>%
-  group_by(minority) %>% 
-  summarize(lead_ave = mean(lead_percent, na.rm = TRUE)) %>% 
-  ggplot(aes(y = lead_ave, x = minority)) + geom_col()
+  ggplot(aes(y = lead_percent, x = minority)) + geom_violin() +
+  labs(x = "Minority status", y = "Proportion of pipes with lead > 15 ppb",
+       title = "Minority status and lead exposure")
 
 eda_data %>%
-  group_by(all_minority) %>% 
-  summarize(lead_ave = mean(lead_percent, na.rm = TRUE)) %>% 
-  ggplot(aes(y = lead_ave, x = all_minority)) + geom_col()
-
-eda_data %>%
-  mutate(black_maj = ifelse(black > .5, "Black", "Other")) %>% 
-  group_by(black_maj) %>% 
-  summarize(lead_ave = mean(lead_percent, na.rm = TRUE)) %>% 
-  ggplot(aes(y = lead_ave, x = black_maj)) + geom_col()
-
-summary(lm(lead_percent ~ minority, eda_data))
-t.test(lead_percent ~ minority, eda_data)
-
-summary(lm(lead_percent ~ all_minority, eda_data))
+  ggplot(aes(y = lead_percent, x = race)) + geom_violin() +
+  labs(x = "Race/Ethnicity", y = "Proportion of pipes with lead > 15 ppb",
+       title = "Race/Ethnicity and lead exposure")
 ```
 
-### Lead and English Language
-
-```{r lang}
-summary(eda_data$lead_percent)
-summary(eda_data$english_language_learners)
-
-eda_data %>% 
-  ggplot(aes(y = lead_percent, x = english_language_learners)) + 
-  geom_point() + geom_smooth(method = "lm")
-
-summary(lm(lead_percent ~ english_language_learners, eda_data))
-
-eda_chi_sq_lang <- eda_data %>% 
-  mutate(lang_bi = ifelse(english_language_learners > mean(english_language_learners, na.rm = TRUE), 1, 0),
-         lead_bi = ifelse(lead_percent > mean(lead_percent, na.rm = TRUE), 1, 0))
-
-chisq.test(eda_chi_sq_lang$lang_bi, eda_chi_sq$lead_bi)
-table(eda_chi_sq_lang$lang_bi, eda_chi_sq$lead_bi)
-```
-
-## Standardized Test Scores
+## Lead and Standardized Test Scores
 
 ```{r test}
 summary(eda_data$lead_percent)
@@ -105,25 +90,32 @@ summary(eda_data$mean_scale_score)
 
 eda_data %>% 
   ggplot(aes(y = mean_scale_score, x = lead_percent)) + 
-  geom_point() + geom_smooth(method = "lm")
-
-summary(lm(mean_scale_score ~ lead_percent, eda_data))
-
-eda_data %>% 
-  filter(lead_percent < .5) %>% 
-  lm(mean_scale_score ~ lead_percent, data = .) %>% 
-  summary()
-     
-eda_data %>% 
-  filter(lead_percent < .5) %>% 
-  ggplot(aes(y = mean_scale_score, x = lead_percent)) + 
-  geom_point() + geom_smooth(method = "lm")
-
-eda_chi_sq_score <- eda_data %>% 
-  mutate(score_bi = ifelse(mean_scale_score > mean(mean_scale_score, na.rm = TRUE), 1, 0),
-         lead_bi = ifelse(lead_percent > mean(lead_percent, na.rm = TRUE), 1, 0))
-
-chisq.test(eda_chi_sq_score$score_bi, eda_chi_sq$lead_bi)
-table(eda_chi_sq_score$score_bi, eda_chi_sq$lead_bi)
+  geom_hex() +
+  labs(y = "Standardized test math scores", x = "Proportion of pipes with lead > 15 ppb",
+       title = "Lead exposure and student math scores")
 ```
 
+### Race and Standardized Test Scores
+
+```{r test_race}
+table(eda_data$race)
+summary(eda_data$mean_scale_score)
+
+eda_data %>% 
+  ggplot(aes(y = mean_scale_score, x = race)) + 
+  geom_violin() +
+  labs(y = "Standardized test math scores", x = "Race/Ethnicity",
+       title = "Race/Ethnicity exposure and student math scores")
+```
+
+### Poverty and Standardized Test Scores
+
+```{r poverty_test}
+summary(eda_data$mean_scale_score)
+summary(eda_data$poverty)
+
+eda_data %>% 
+  ggplot(aes(y = mean_scale_score, x = poverty)) + geom_hex() +
+  labs(x = "Percent of students in poverty", y = "Standardized test math scores",
+       title = "Poverty status and student math scores")
+```
