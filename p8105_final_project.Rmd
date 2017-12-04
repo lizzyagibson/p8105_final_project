@@ -106,7 +106,7 @@ all_data <- left_join(school_data, lead_data, by = "school_number") %>%
   select(-school_name.y, -dbn) %>% 
   mutate(location = str_replace(location, "POINT \\(", ""),
          location = str_replace(location, "\\)", "")) %>% 
-  separate(location, into = c("latitude", "longitude"), sep = " ") %>% #separate lat and long
+  separate(location, into = c("longitude", "latitude"), sep = " ") %>% #separate lat and long
   mutate(largest = pmax(white, black, asian, hispanic, other_race)) %>% 
   mutate(race = ifelse(largest == white, "White", #create categorical race category
                       ifelse(largest == black, "Black",
@@ -125,6 +125,16 @@ write_csv(all_data, "./all_data.csv")
 * minority = "Minority" if > 50% Black, Asian, Hispanic, Other; "White" if > 50% white
 * race = categorical, gives name of race variable with largest proportion
 
+```{r}
+library(ggmap)
+
+nyc_map <- get_map('new york', maptype = 'toner', zoom = 11)
+
+ggmap(nyc_map) +
+  geom_point(aes(x = longitude, y = latitude), 
+                 data = all_data, alpha = .5, 
+                 color = "dark red", size = 1)
+```
 
 
 

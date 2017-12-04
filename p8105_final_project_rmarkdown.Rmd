@@ -10,7 +10,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 library(tidyverse)
 library(janitor)
@@ -147,7 +147,7 @@ Visualizations, summaries, and exploratory statistical analyses. Justify the ste
 
 ### Table One
 
-```{r table_one}
+```{r table_one, include = FALSE}
 continuous <- c("english_language_learners", 
                 "poverty","students_with_disabilities", 
                 "mean_scale_score", "lead_percent")
@@ -157,9 +157,27 @@ categorical <- c("any_lead_free_buildings")
 biomarkers <- c("lead_percent")
 
 table <- CreateTableOne(vars = continuous, strata = "race", data = eda_data, factorVars = categorical)
-print(table, showAllLevels = TRUE, nonnormal = biomarkers)
-
+table1 <- print(table, showAllLevels = TRUE, nonnormal = biomarkers)
 ```
+
+```{r table_one_show}
+xtable::xtable(table1) %>% 
+  mutate(Variable = rownames(table1)) %>% 
+  select(Variable, everything()) %>% 
+  mutate(Variable = str_replace(Variable, " \\(mean \\(sd\\)\\)", ""),
+         Variable = str_replace(Variable, " \\(median \\[IQR\\]\\)", ""),
+         Variable = str_replace(Variable, "^n", "Number of schools"),
+         Variable = str_replace(Variable, "english_language_learners", "English language learners"),
+         Variable = str_replace(Variable, "poverty", "Poverty"),
+         Variable = str_replace(Variable, "students_with_disabilities", "Students with disabilities"),
+         Variable = str_replace(Variable, "mean_scale_score", "Mean math score"),
+         Variable = str_replace(Variable, "lead_percent", "Lead proportion")) %>% 
+  select(-level, -test) %>% 
+  knitr::kable()
+```
+
+1. All values are mean (standard deviation) except for lead, which is median [Inter-Quartile Range] because of its right skew.
+2. Mean math score is averaged over all grades.
 
 ### Lead and Poverty
 
