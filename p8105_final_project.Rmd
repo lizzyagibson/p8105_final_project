@@ -12,11 +12,17 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%")
+
 library(tidyverse)
 library(janitor)
 library(rvest)
 library(httr)
 library(stringr)
+library(plotly)
 library(forcats)
 ```
 
@@ -127,13 +133,14 @@ write_csv(all_data, "./all_data.csv")
 
 ```{r}
 library(ggmap)
+library(maps)
 
 nyc_map <- get_map('new york', maptype = 'terrain', zoom = 11)
 
 map_data <- all_data %>% 
   mutate(Lead = lead_percent,
          Race = race)
-  
+
 ggmap(nyc_map) +
   geom_point(aes(x = longitude, y = latitude, color = Race, size = Lead), 
              data = map_data,
