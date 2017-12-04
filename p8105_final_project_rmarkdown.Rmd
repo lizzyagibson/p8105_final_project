@@ -170,7 +170,7 @@ summary(eda_data$poverty)
 eda_data %>% 
   ggplot(aes(y = lead_percent, x = poverty)) + geom_hex() +
   labs(x = "Percent of students in poverty", y = "Proportion of pipes with lead > 15 ppb",
-       title = "Poverty status and lead exposure")
+       title = "Poverty Status and Lead Exposure")
 
 summary(eda_data$poverty)
 summary(eda_data$lead_percent)
@@ -185,9 +185,11 @@ table(eda_data$minority)
 table(eda_data$race)
 
 eda_data %>%
-  ggplot(aes(y = lead_percent, x = race)) + geom_violin() +
+  ggplot(aes(y = lead_percent, x = race, fill = race)) + 
+  geom_violin() + scale_fill_brewer(palette = "Pastel2") +
   labs(x = "Race/Ethnicity", y = "Proportion of pipes with lead > 15 ppb",
-       title = "Race/Ethnicity and lead exposure")
+       title = "Race/Ethnicity and Lead Exposure") +
+       theme(legend.position = "none")
 ```
 
 ### Lead and Standardized Test Scores
@@ -200,7 +202,7 @@ eda_data %>%
   ggplot(aes(y = mean_scale_score, x = lead_percent)) + 
   geom_hex() +
   labs(y = "Standardized test math scores", x = "Proportion of pipes with lead > 15 ppb",
-       title = "Lead exposure and student math scores")
+       title = "Lead Exposure and Student Math Scores")
 
 summary(eda_data$mean_scale_score)
 
@@ -214,10 +216,11 @@ table(eda_data$race)
 summary(eda_data$mean_scale_score)
 
 eda_data %>% 
-  ggplot(aes(y = mean_scale_score, x = race)) + 
-  geom_violin() +
-  labs(y = "Standardized test math scores", x = "Race/Ethnicity",
-       title = "Race/Ethnicity and student math scores")
+  ggplot(aes(y = mean_scale_score, x = race, fill = race)) + 
+  geom_violin() + scale_fill_brewer(palette = "Pastel2") +
+  labs(y = "Standardized math test scores", x = "Race/Ethnicity",
+       title = "Race/Ethnicity and student math scores") +
+   theme(legend.position = "none")
 ```
 
 #### Poverty and Standardized Test Scores
@@ -229,7 +232,7 @@ summary(eda_data$poverty)
 eda_data %>% 
   ggplot(aes(y = mean_scale_score, x = poverty)) + geom_hex() +
   labs(x = "Percent of students in poverty", y = "Standardized test math scores",
-       title = "Poverty status and student math scores")
+       title = "Poverty Status and Student Math Scores")
 
 cor.test(eda_data$mean_scale_score, eda_data$poverty, use = "complete.obs")
 ```
