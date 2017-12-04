@@ -29,6 +29,7 @@ summary(eda_data$poverty)
 summary(eda_data$lead_percent)
 hist(eda_data$lead_percent)
 
+
 eda_data %>% 
   ggplot(aes(y = lead_percent, x = poverty)) + geom_point() + geom_smooth() +
   labs(x = "Percent of students in poverty", y = "Proportion of pipes with lead > 15 ppb",

@@ -19,6 +19,8 @@ library(httr)
 library(stringr)
 library(forcats)
 library(tableone)
+library(ggplot2)
+library(ggthemes)
 
 theme_set(theme_bw())
 theme_update(legend.position = "bottom")
@@ -60,7 +62,7 @@ summary(eda_data$lead_percent)
 summary(eda_data$poverty)
 
 eda_data %>% 
-  ggplot(aes(y = lead_percent, x = poverty)) + geom_hex() +
+  ggplot(aes(y = lead_percent, x = poverty)) + geom_hex() + 
   labs(x = "Percent of students in poverty", y = "Proportion of pipes with lead > 15 ppb",
        title = "Poverty status and lead exposure")
 ```
@@ -72,14 +74,18 @@ table(eda_data$minority)
 table(eda_data$race)
 
 eda_data %>%
-  ggplot(aes(y = lead_percent, x = minority)) + geom_violin() +
+  ggplot(aes(y = lead_percent, x = minority, fill = minority)) + 
+  geom_violin() +  scale_fill_brewer(palette = "Pastel2")
   labs(x = "Minority status", y = "Proportion of pipes with lead > 15 ppb",
-       title = "Minority status and lead exposure")
+       title = "Minority status and lead exposure") +
+       theme(legend.position = "none")
 
 eda_data %>%
-  ggplot(aes(y = lead_percent, x = race)) + geom_violin() +
+  ggplot(aes(y = lead_percent, x = race, fill = race)) + 
+  geom_violin() + scale_fill_brewer(palette = "Pastel2") +
   labs(x = "Race/Ethnicity", y = "Proportion of pipes with lead > 15 ppb",
-       title = "Race/Ethnicity and lead exposure")
+       title = "Race/Ethnicity and lead exposure") +
+       theme(legend.position = "none")
 ```
 
 ## Lead and Standardized Test Scores
@@ -102,10 +108,11 @@ table(eda_data$race)
 summary(eda_data$mean_scale_score)
 
 eda_data %>% 
-  ggplot(aes(y = mean_scale_score, x = race)) + 
-  geom_violin() +
+  ggplot(aes(y = mean_scale_score, x = race, fill = race)) + 
+  geom_violin() + scale_fill_brewer(palette = "Pastel2") +
   labs(y = "Standardized test math scores", x = "Race/Ethnicity",
-       title = "Race/Ethnicity exposure and student math scores")
+       title = "Race/Ethnicity exposure and student math scores") +
+   theme(legend.position = "none")
 ```
 
 ### Poverty and Standardized Test Scores
