@@ -118,20 +118,31 @@ map_data = lead_data %>%
   select(-extra, -remove)
 ```
   
-**Leaflet**  
+### Map of All Schools in Dataset
   
 ```{r}
 map_data %>% 
   leaflet() %>% 
   addTiles() %>% 
-  addMarkers(lng = -73.913363354, lat = 40.813679046, popup = "X027")
+  addMarkers(~as.numeric(longitude), ~as.numeric(latitude), popup = ~as.character(school_number), label = ~as.character(school_number))
 ```
 
+### Schools Without Lead Above Standard
 
+```{r}
+map_data %>% 
+  filter(number_of_outlets_result_greater == 0) %>% 
+  leaflet() %>% 
+  addTiles() %>% 
+  addMarkers(~as.numeric(longitude), ~as.numeric(latitude), popup = ~as.character(school_number), label = ~as.character(school_number))
+```
 
+### Schools With Lead Above Standard
 
-
-
-
-
-
+```{r}
+map_data %>% 
+  filter(number_of_outlets_result_greater > 0) %>% 
+  leaflet() %>% 
+  addTiles() %>% 
+  addMarkers(~as.numeric(longitude), ~as.numeric(latitude), popup = ~as.character(school_number), label = ~as.character(school_number))
+```
