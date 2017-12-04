@@ -168,8 +168,8 @@ summary(eda_data$lead_percent)
 summary(eda_data$poverty)
 
 eda_data %>% 
-  ggplot(aes(y = lead_percent, x = poverty)) + geom_hex() +
-  labs(x = "Percent of students in poverty", y = "Proportion of pipes with lead > 15 ppb",
+  ggplot(aes(y = lead_percent, x = poverty)) + geom_hex() + 
+  labs(x = "Proportion of students in poverty", y = "Proportion of pipes with lead > 15 ppb",
        title = "Poverty Status and Lead Exposure")
 
 summary(eda_data$poverty)
@@ -201,7 +201,7 @@ summary(eda_data$mean_scale_score)
 eda_data %>% 
   ggplot(aes(y = mean_scale_score, x = lead_percent)) + 
   geom_hex() +
-  labs(y = "Standardized test math scores", x = "Proportion of pipes with lead > 15 ppb",
+  labs(y = "Standardized math test scores", x = "Proportion of pipes with lead > 15 ppb",
        title = "Lead Exposure and Student Math Scores")
 
 summary(eda_data$mean_scale_score)
@@ -231,7 +231,7 @@ summary(eda_data$poverty)
 
 eda_data %>% 
   ggplot(aes(y = mean_scale_score, x = poverty)) + geom_hex() +
-  labs(x = "Percent of students in poverty", y = "Standardized test math scores",
+  labs(x = "Proportion of students in poverty", y = "Standardized math test scores",
        title = "Poverty Status and Student Math Scores")
 
 cor.test(eda_data$mean_scale_score, eda_data$poverty, use = "complete.obs")
