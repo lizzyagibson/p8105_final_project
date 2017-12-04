@@ -29,11 +29,11 @@ theme_update(legend.position = "bottom")
 
 A global issue that affects the lives of individuals globally, even within developed countries like the United States, is a lack of access to clean drinking water. Contaminants such as lead are not always visible to the eye and can be deleterious to health especially to susceptible populations like that of children. Although schools should allow children safe access to drinking water, recent evaluations have found schools throughout the US to have high levels of lead beyond the set standard. The goal of this project is to investigate exposure to lead for children throughout New York City schools related to race, poverty, disability, and ability to speak the native language. 
 
-## Related work
+## Related Work
 
 Anything that inspired you, such as a paper, a web site, or something we discussed in class.
 
-## Initial questions
+## Initial Questions
 
 What questions are you trying to answer? How did these questions evolve over the course of the project? What new questions did you consider in the course of your analysis?
 
@@ -49,7 +49,7 @@ All data was retrieved from the [Health Data NY Open Access Website](https://hea
 
 * Data from [2015-16 Guidance Counselor Reporting - Demographic Data API](https://data.cityofnewyork.us/Education/2015-16-Guidance-Counselor-Reporting-Demographic-D/iuvu-z276).
 
-*Data from [2013-2017 School Math Results - All API](https://data.cityofnewyork.us/Education/2013-2017-School-Math-Results-All/kha6-7i9i).
+* Data from [2013-2017 School Math Results - All API](https://data.cityofnewyork.us/Education/2013-2017-School-Math-Results-All/kha6-7i9i).
 
 ### Cleaning and Merging Data 
 
@@ -141,7 +141,7 @@ eda_data <- all_data %>%
 * minority = "Minority" if > 50% Black, Asian, Hispanic, Other; "White" if > 50% white
 * race = categorical, gives name of race variable with largest proportion
 
-## Exploratory analysis
+## Exploratory Analysis
 
 Visualizations, summaries, and exploratory statistical analyses. Justify the steps you took, and show any major changes to your ideas. 
 
@@ -181,15 +181,24 @@ cor.test(eda_data$lead_percent, eda_data$poverty, method = "spearman", use = "co
 ### Lead and Minority Status
 
 ```{r minority}
-table(eda_data$minority)
-table(eda_data$race)
-
 eda_data %>%
   ggplot(aes(y = lead_percent, x = race, fill = race)) + 
   geom_violin() + scale_fill_brewer(palette = "Pastel2") +
   labs(x = "Race/Ethnicity", y = "Proportion of pipes with lead > 15 ppb",
        title = "Race/Ethnicity and Lead Exposure") +
        theme(legend.position = "none")
+
+table(eda_data$minority)
+tapply(eda_data$lead_percent, eda_data$minority, mean, na.rm = TRUE)
+
+table(eda_data$race)
+tapply(eda_data$lead_percent, eda_data$race, mean, na.rm = TRUE)
+
+wilcox.test(lead_percent ~ minority, data = eda_data)
+#nonparametric TTEST
+
+kruskal.test(lead_percent ~ as.factor(race), data = eda_data)
+#non-parametric ANOVA
 ```
 
 ### Lead and Standardized Test Scores
@@ -212,54 +221,13 @@ cor.test(eda_data$lead_percent, eda_data$mean_scale_score, method = "spearman", 
 #### Race and Standardized Test Scores
 
 ```{r test_race}
-table(eda_data$race)
-summary(eda_data$mean_scale_score)
-
 eda_data %>% 
   ggplot(aes(y = mean_scale_score, x = race, fill = race)) + 
   geom_violin() + scale_fill_brewer(palette = "Pastel2") +
   labs(y = "Standardized math test scores", x = "Race/Ethnicity",
        title = "Race/Ethnicity and student math scores") +
    theme(legend.position = "none")
-```
 
-#### Poverty and Standardized Test Scores
-
-```{r poverty_test}
-summary(eda_data$mean_scale_score)
-summary(eda_data$poverty)
-
-eda_data %>% 
-  ggplot(aes(y = mean_scale_score, x = poverty)) + geom_hex() +
-  labs(x = "Proportion of students in poverty", y = "Standardized math test scores",
-       title = "Poverty Status and Student Math Scores")
-
-cor.test(eda_data$mean_scale_score, eda_data$poverty, use = "complete.obs")
-```
-
-## Additional analysis
-
-If you undertake formal statistical analyses, describe these in detail
-
-### Lead and Minority Status Statistical Analyses
-
-```{r minority_stats}
-table(eda_data$minority)
-tapply(eda_data$lead_percent, eda_data$minority, mean, na.rm = TRUE)
-
-table(eda_data$race)
-tapply(eda_data$lead_percent, eda_data$race, mean, na.rm = TRUE)
-
-wilcox.test(lead_percent ~ minority, data = eda_data)
-#nonparametric TTEST
-
-kruskal.test(lead_percent ~ as.factor(race), data = eda_data)
-#non-parametric ANOVA
-```
-
-#### Race and Standardized Test Scores Statistical Analyses
-
-```{r minority_test_stats}
 table(eda_data$minority)
 tapply(eda_data$mean_scale_score, eda_data$minority, mean, na.rm = TRUE)
 
@@ -271,9 +239,16 @@ t.test(mean_scale_score ~ minority, data = eda_data)
 summary(aov(mean_scale_score ~ as.factor(race), data = eda_data))
 ```
 
-#### Poverty and Standardized Test Scores Statistical Analyses
+#### Poverty and Standardized Test Scores
 
-```{r poverty_test_stats}
+```{r poverty_test}
+eda_data %>% 
+  ggplot(aes(y = mean_scale_score, x = poverty)) + geom_hex() +
+  labs(x = "Proportion of students in poverty", y = "Standardized math test scores",
+       title = "Poverty Status and Student Math Scores")
+
+cor.test(eda_data$mean_scale_score, eda_data$poverty, use = "complete.obs")
+
 summary(eda_data$poverty)
 summary(eda_data$mean_scale_score)
 
