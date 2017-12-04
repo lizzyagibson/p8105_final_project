@@ -19,6 +19,7 @@ library(httr)
 library(stringr)
 library(forcats)
 library(tableone)
+library(leaflet)
 
 theme_set(theme_bw())
 theme_update(legend.position = "bottom")
@@ -192,11 +193,6 @@ table(eda_data$minority)
 table(eda_data$race)
 
 eda_data %>%
-  ggplot(aes(y = lead_percent, x = minority)) + geom_violin() +
-  labs(x = "Minority status", y = "Proportion of pipes with lead > 15 ppb",
-       title = "Minority status and lead exposure")
-
-eda_data %>%
   ggplot(aes(y = lead_percent, x = race)) + geom_violin() +
   labs(x = "Race/Ethnicity", y = "Proportion of pipes with lead > 15 ppb",
        title = "Race/Ethnicity and lead exposure")
@@ -235,7 +231,7 @@ eda_data %>%
   ggplot(aes(y = mean_scale_score, x = race)) + 
   geom_violin() +
   labs(y = "Standardized test math scores", x = "Race/Ethnicity",
-       title = "Race/Ethnicity exposure and student math scores")
+       title = "Race/Ethnicity and student math scores")
 ```
 
 #### Poverty and Standardized Test Scores
@@ -304,6 +300,16 @@ eda_data %>%
   select(-std.error, -statistic) %>% 
   knitr::kable()
 ```
+
+### Mapping Data
+
+```{r}
+map_data %>% 
+  leaflet() %>% 
+  addTiles() %>% 
+  addMarkers(~longitude, ~latitude, popup = ~as.character(school_name.x), label = ~as.character(school_name.x))
+```
+
 
 ## Discussion
 
