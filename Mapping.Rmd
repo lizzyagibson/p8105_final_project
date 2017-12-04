@@ -19,9 +19,6 @@ library(httr)
 library(stringr)
 library(forcats)
 library(leaflet)
-library(ggthemes)
-library(ggplot2)
-library(ggmap)
 ```
 
 ## Read Data
@@ -121,41 +118,31 @@ map_data = lead_data %>%
   select(-extra, -remove)
 ```
   
-**Leaflet**  
+### Map of All Schools in Dataset
   
 ```{r}
 map_data %>% 
   leaflet() %>% 
   addTiles() %>% 
-  addMarkers(lng = -73.913363354, lat = 40.813679046, popup = "X027")
-
-for(i in 1:nrow(map_data)){
-    map$addMarker(
-      map_data$latitude[i],
-      map_data$longitude[i],
-      i
-    )
-}
+  addMarkers(~as.numeric(longitude), ~as.numeric(latitude), popup = ~as.character(school_number), label = ~as.character(school_number))
 ```
 
-```{r}
-library(rworldmap)
-new_map = get_map()
-  plot(new_map, xlim = c(-73, -74.5), ylim = c(40.25, 41), asp = 1)
-  points(map_data$longitude, map_data$latitude, col = "red", cex = .6)
-```
-
-```{r}
-map = get_map(location = 'New York State')
-  plot(map, xlim = c(-73, -74.5), ylim = c(40.25, 41), asp = 1)
-  points(map_data$longitude, map_data$latitude, col = "red", cex = .6)
-```
+### Schools Without Lead Above Standard
 
 ```{r}
 map_data %>% 
   filter(number_of_outlets_result_greater == 0) %>% 
-  map = get_map(location = 'New York State') %>% 
-  plot(xlim = c(-73, -74.5), ylim = c(40.25, 41), asp = 1) %>% 
-  points(longitude, latitude, col = "red", cex = .6)
+  leaflet() %>% 
+  addTiles() %>% 
+  addMarkers(~as.numeric(longitude), ~as.numeric(latitude), popup = ~as.character(school_number), label = ~as.character(school_number))
 ```
 
+### Schools With Lead Above Standard
+
+```{r}
+map_data %>% 
+  filter(number_of_outlets_result_greater > 0) %>% 
+  leaflet() %>% 
+  addTiles() %>% 
+  addMarkers(~as.numeric(longitude), ~as.numeric(latitude), popup = ~as.character(school_number), label = ~as.character(school_number))
+```
