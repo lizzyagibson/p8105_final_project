@@ -19,6 +19,9 @@ library(httr)
 library(stringr)
 library(forcats)
 library(leaflet)
+library(ggthemes)
+library(ggplot2)
+library(ggmap)
 ```
 
 ## Read Data
@@ -127,6 +130,12 @@ map_data %>%
   addMarkers(lng = -73.913363354, lat = 40.813679046, popup = "X027")
 ```
 
+```{r}
+library(rworldmap)
+new_map = get_map()
+  plot(new_map, xlim = c(-73, -74.5), ylim = c(40.25, 41), asp = 1)
+  points(map_data$longitude, map_data$latitude, col = "red", cex = .6)
+```
 
 
 
