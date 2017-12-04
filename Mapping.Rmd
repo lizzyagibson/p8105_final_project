@@ -128,6 +128,14 @@ map_data %>%
   leaflet() %>% 
   addTiles() %>% 
   addMarkers(lng = -73.913363354, lat = 40.813679046, popup = "X027")
+
+for(i in 1:nrow(map_data)){
+    map$addMarker(
+      map_data$latitude[i],
+      map_data$longitude[i],
+      i
+    )
+}
 ```
 
 ```{r}
@@ -137,10 +145,17 @@ new_map = get_map()
   points(map_data$longitude, map_data$latitude, col = "red", cex = .6)
 ```
 
+```{r}
+map = get_map(location = 'New York State')
+  plot(map, xlim = c(-73, -74.5), ylim = c(40.25, 41), asp = 1)
+  points(map_data$longitude, map_data$latitude, col = "red", cex = .6)
+```
 
-
-
-
-
-
+```{r}
+map_data %>% 
+  filter(number_of_outlets_result_greater == 0) %>% 
+  map = get_map(location = 'New York State') %>% 
+  plot(xlim = c(-73, -74.5), ylim = c(40.25, 41), asp = 1) %>% 
+  points(longitude, latitude, col = "red", cex = .6)
+```
 

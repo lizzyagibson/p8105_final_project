@@ -24,7 +24,6 @@ theme_set(theme_bw())
 theme_update(legend.position = "bottom")
 ```
 
-
 ## Motivation
 
 A global issue that affects the lives of individuals globally, even within developed countries like the United States, is a lack of access to clean drinking water. Contaminants such as lead are not always visible to the eye and can be deleterious to health especially to susceptible populations like that of children. Although schools should allow children safe access to drinking water, recent evaluations have found schools throughout the US to have high levels of lead beyond the set standard. The goal of this project is to investigate exposure to lead for children throughout New York City schools related to race, poverty, disability, and ability to speak the native language. 
@@ -37,11 +36,15 @@ Anything that inspired you, such as a paper, a web site, or something we discuss
 
 What questions are you trying to answer? How did these questions evolve over the course of the project? What new questions did you consider in the course of your analysis?
 
-## Data: Source, scraping method, cleaning, etc.
+## Data
 
-**Data from Health Data NY Open Access [Website](https://health.data.ny.gov/Health/Lead-Testing-in-School-Drinking-Water-Sampling-and/rkyy-fsv9).**
+### Source
 
-* Lead Testing in School Drinking Water Sampling and Results: Most Recently Reported Beginning 2016
+All data was retrieved from the [Health Data NY Open Access Website](https://health.data.ny.gov/) API's.
+
+### Cleaning 
+
+**Data [Lead Testing in School Drinking Water Sampling and Results: Most Recently Reported Beginning 2016 API](https://health.data.ny.gov/Health/Lead-Testing-in-School-Drinking-Water-Sampling-and/rkyy-fsv9).**
 
 ```{r read_lead, message = FALSE, warning = FALSE}
 #read in lead data, restrict to NYC counties
@@ -53,9 +56,7 @@ lead_data <- GET("https://health.data.ny.gov/resource/ja9d-vnbi.csv", query = li
          number_of_outlets_result_greater, number_of_outlets, county, school_district)
 ```
 
-**Data from Health Data NY Open Access [Website](https://health.data.ny.gov/Health/Lead-Testing-in-School-Drinking-Water-Buildings-wi/5hbp-c6bb).**
-
-* Lead Testing in School Drinking Water: Buildings with Lead-Free Plumbing Beginning 2016
+**Data from [Lead Testing in School Drinking Water: Buildings with Lead-Free Plumbing Beginning 2016 API](https://health.data.ny.gov/Health/Lead-Testing-in-School-Drinking-Water-Buildings-wi/5hbp-c6bb).**
 
 ```{r read_lead_free, message = FALSE, warning = FALSE}
 #read in lead data, restrict to NYC counties
@@ -68,9 +69,7 @@ lead_free_data <- GET("https://health.data.ny.gov/resource/mn8r-98tx.csv", query
 
 ***THERE ARE NO SCHOOLS IN NEW YORK CITY WITH LEAD FREE PIPES***
 
-**Data from NYC Open Data [Website](https://data.cityofnewyork.us/Education/2015-16-Guidance-Counselor-Reporting-Demographic-D/iuvu-z276).**
-
-* 2015-16 Guidance Counselor Reporting - Demographic Data
+**Data from [2015-16 Guidance Counselor Reporting - Demographic Data API](https://data.cityofnewyork.us/Education/2015-16-Guidance-Counselor-Reporting-Demographic-D/iuvu-z276).**
 
 ```{r read_demo, message = FALSE, warning = FALSE}
 #read in demographic characteristics, create "school_number" to merge with lead data
@@ -93,9 +92,7 @@ demo_data <- GET("https://data.cityofnewyork.us/resource/vjn2-hei2.csv", query =
   mutate(school_number = str_replace(dbn, "^..", "")) #create school number to merge with lead data
 ```
 
-**Data from NYC Open Data [Website](https://data.cityofnewyork.us/Education/2013-2017-School-Math-Results-All/kha6-7i9i).**
-
-* 2013-2017 School Math Results - All
+**Data from [2013-2017 School Math Results - All API](https://data.cityofnewyork.us/Education/2013-2017-School-Math-Results-All/kha6-7i9i).**
 
 ```{r read_scores, message = FALSE, warning = FALSE}
 #read in school math scores, restrict to 2017
@@ -145,14 +142,13 @@ eda_data <- all_data %>%
 * minority = "Minority" if > 50% Black, Asian, Hispanic, Other; "White" if > 50% white
 * race = categorical, gives name of race variable with largest proportion
 
-
 ## Exploratory analysis
 
 Visualizations, summaries, and exploratory statistical analyses. Justify the steps you took, and show any major changes to your ideas. 
 
 ### Table One
 
-```{r}
+```{r table_one}
 continuous <- c("english_language_learners", 
                 "poverty","students_with_disabilities", 
                 "mean_scale_score", "lead_percent")
@@ -267,7 +263,7 @@ If you undertake formal statistical analyses, describe these in detail
 
 ### Lead and Minority Status Statistical Analyses
 
-```{r minority}
+```{r minority_stats}
 table(eda_data$minority)
 tapply(eda_data$lead_percent, eda_data$minority, mean, na.rm = TRUE)
 
@@ -283,7 +279,7 @@ kruskal.test(lead_percent ~ as.factor(race), data = eda_data)
 
 #### Race and Standardized Test Scores Statistical Analyses
 
-```{r minority_test}
+```{r minority_test_stats}
 table(eda_data$minority)
 tapply(eda_data$mean_scale_score, eda_data$minority, mean, na.rm = TRUE)
 hist(eda_data$mean_scale_score)
@@ -298,7 +294,7 @@ summary(aov(mean_scale_score ~ as.factor(race), data = eda_data))
 
 #### Poverty and Standardized Test Scores Statistical Analyses
 
-```{r poverty_test}
+```{r poverty_test_stats}
 summary(eda_data$poverty)
 summary(eda_data$mean_scale_score)
 
