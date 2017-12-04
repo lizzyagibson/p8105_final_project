@@ -27,7 +27,7 @@ theme_update(legend.position = "bottom")
 
 ## Motivation
 
-A global issue that affects the lives of individuals globally, even within developed countries like the United States, is a lack of access to clean drinking water. Contaminants such as lead are not always visible to the eye and can be deleterious to health especially to susceptible populations like that of children. Although schools should allow children safe access to drinking water, recent evaluations have found schools throughout the US to have high levels of lead beyond the set standard. The goal of this project is to investigate exposure to lead for children throughout New York City schools related to race, poverty, disability, and ability to speak the native language. 
+An issue that affects the lives of individuals globally, even within developed countries like the United States, is a lack of access to clean drinking water. Contaminants such as lead are not always visible to the eye and can be deleterious to health especially to susceptible populations like that of children. Although schools should allow children safe access to drinking water, recent evaluations have found schools throughout the US to have high levels of lead beyond the set standard of 15 ppb (parts per billion). The goal of this project is to investigate exposure to lead for children throughout New York City schools related to race, poverty, and standardized test scores at the school level. 
 
 ## Related Work
 
@@ -41,7 +41,7 @@ What questions are you trying to answer? How did these questions evolve over the
 
 ### Sources
 
-All data was retrieved from the [Health Data NY Open Access Website](https://health.data.ny.gov/) API's.
+All data was retrieved from the [Health Data NY Open Access Website](https://health.data.ny.gov/) a [NYC Open Data](https://opendata.cityofnewyork.us/) API's.
 
 * Data from [Lead Testing in School Drinking Water Sampling and Results: Most Recently Reported Beginning 2016 API](https://health.data.ny.gov/Health/Lead-Testing-in-School-Drinking-Water-Sampling-and/rkyy-fsv9).
 
@@ -135,7 +135,7 @@ eda_data <- all_data %>%
          any_lead_free_buildings, lead_percent, minority, race)
 ```
 
-### Data Dictionary
+### Data Dictionary (created variables)
 
 * lead_percent = proportion of all outlets with lead level > 15 ppb
 * minority = "Minority" if > 50% Black, Asian, Hispanic, Other; "White" if > 50% white
@@ -143,7 +143,7 @@ eda_data <- all_data %>%
 
 ## Exploratory Analysis
 
-Visualizations, summaries, and exploratory statistical analyses. Justify the steps you took, and show any major changes to your ideas. 
+Visualizations, summaries, and exploratory statistical analyses of lead, race, poverty, and standardized test scores in New York City.
 
 ### Table One
 
@@ -179,6 +179,8 @@ xtable::xtable(table1) %>%
 1. All values are mean (standard deviation) except for lead, which is median [Inter-Quartile Range] because of its right skew.
 2. Mean math score is averaged over all grades.
 
+Table 1 shows differences across racial/ethnic majority schools in English language learners, poverty, students with disabilities, average math scores, and lead levels.
+
 ### Lead and Poverty
 
 ```{r poverty}
@@ -192,9 +194,13 @@ eda_data %>%
 
 summary(eda_data$poverty)
 summary(eda_data$lead_percent)
+```
 
+```{r pov_corr}
 cor.test(eda_data$lead_percent, eda_data$poverty, method = "spearman", use = "complete.obs")
 ```
+
+Using a Spearman correlation for our skewed data, we see that lead exposure and poverty are not significantly correlated in NYC public schools (p = 0.20).
 
 ### Lead and Minority Status
 
@@ -206,18 +212,14 @@ eda_data %>%
        title = "Race/Ethnicity and Lead Exposure") +
        theme(legend.position = "none")
 
-table(eda_data$minority)
-tapply(eda_data$lead_percent, eda_data$minority, mean, na.rm = TRUE)
-
 table(eda_data$race)
 tapply(eda_data$lead_percent, eda_data$race, mean, na.rm = TRUE)
-
-wilcox.test(lead_percent ~ minority, data = eda_data)
-#nonparametric TTEST
 
 kruskal.test(lead_percent ~ as.factor(race), data = eda_data)
 #non-parametric ANOVA
 ```
+
+Using a non-parametric Kruskal Wallis test for differences in distributions across categories, we find that the differences in lead exposure across racial groups is statistically significant (p = 0.01). Predominantly black schools are more likely to face lead exposure through drinking water. 
 
 ### Lead and Standardized Test Scores
 
@@ -236,6 +238,8 @@ summary(eda_data$mean_scale_score)
 cor.test(eda_data$lead_percent, eda_data$mean_scale_score, method = "spearman", use = "complete.obs")
 ```
 
+Again using a Spearman correlation, there is no significant correlation between lead exposure and standardized math test scores in NYC (p = 0.23).
+
 #### Race and Standardized Test Scores
 
 ```{r test_race}
@@ -246,16 +250,13 @@ eda_data %>%
        title = "Race/Ethnicity and student math scores") +
    theme(legend.position = "none")
 
-table(eda_data$minority)
-tapply(eda_data$mean_scale_score, eda_data$minority, mean, na.rm = TRUE)
-
 table(eda_data$race)
 tapply(eda_data$mean_scale_score, eda_data$race, mean, na.rm = TRUE)
 
-t.test(mean_scale_score ~ minority, data = eda_data)
-
 summary(aov(mean_scale_score ~ as.factor(race), data = eda_data))
 ```
+
+Using a parametric ANOVA test for differences in distributions across categories, we find that the differences in standardized math test scores across racial groups is statistically significant (p < 0.001). Predominantly black and Hispanic schools have lower math test scores, on average. 
 
 #### Poverty and Standardized Test Scores
 
@@ -270,12 +271,9 @@ cor.test(eda_data$mean_scale_score, eda_data$poverty, use = "complete.obs")
 summary(eda_data$poverty)
 summary(eda_data$mean_scale_score)
 
-eda_data %>% 
-  lm(mean_scale_score ~ poverty, data = .) %>% 
-  broom::tidy() %>% 
-  select(-std.error, -statistic) %>% 
-  knitr::kable()
 ```
+
+Using a Pearson correlation (since math scores are quite normally distributed), poverty and standardized math test scores in NYC are significantly negatively correlated (p < 0.001), so that poorer schools, on average, perform worse on standardized tests.
 
 ## Mapping Lead Exposures
 

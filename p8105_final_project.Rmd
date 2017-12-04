@@ -128,12 +128,17 @@ write_csv(all_data, "./all_data.csv")
 ```{r}
 library(ggmap)
 
-nyc_map <- get_map('new york', maptype = 'toner', zoom = 11)
+nyc_map <- get_map('new york', maptype = 'terrain', zoom = 11)
 
+map_data <- all_data %>% 
+  mutate(Lead = lead_percent,
+         Race = race)
+  
 ggmap(nyc_map) +
-  geom_point(aes(x = longitude, y = latitude), 
-                 data = all_data, alpha = .5, 
-                 color = "dark red", size = 1)
+  geom_point(aes(x = longitude, y = latitude, color = Race, size = Lead), 
+             data = map_data,
+             alpha = .5) +
+  labs(x = "Longitude", y = "Latitude")
 ```
 
 
