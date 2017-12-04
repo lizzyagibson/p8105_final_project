@@ -29,23 +29,29 @@ theme_update(legend.position = "bottom")
 
 A global issue that affects the lives of individuals globally, even within developed countries like the United States, is a lack of access to clean drinking water. Contaminants such as lead are not always visible to the eye and can be deleterious to health especially to susceptible populations like that of children. Although schools should allow children safe access to drinking water, recent evaluations have found schools throughout the US to have high levels of lead beyond the set standard. The goal of this project is to investigate exposure to lead for children throughout New York City schools related to race, poverty, disability, and ability to speak the native language. 
 
-## Related work
+## Related Work
 
 Anything that inspired you, such as a paper, a web site, or something we discussed in class.
 
-## Initial questions
+## Initial Questions
 
 What questions are you trying to answer? How did these questions evolve over the course of the project? What new questions did you consider in the course of your analysis?
 
 ## Data
 
-### Source
+### Sources
 
 All data was retrieved from the [Health Data NY Open Access Website](https://health.data.ny.gov/) API's.
 
-### Cleaning 
+* Data from [Lead Testing in School Drinking Water Sampling and Results: Most Recently Reported Beginning 2016 API](https://health.data.ny.gov/Health/Lead-Testing-in-School-Drinking-Water-Sampling-and/rkyy-fsv9).
 
-**Data [Lead Testing in School Drinking Water Sampling and Results: Most Recently Reported Beginning 2016 API](https://health.data.ny.gov/Health/Lead-Testing-in-School-Drinking-Water-Sampling-and/rkyy-fsv9).**
+* Data from [Lead Testing in School Drinking Water: Buildings with Lead-Free Plumbing Beginning 2016 API](https://health.data.ny.gov/Health/Lead-Testing-in-School-Drinking-Water-Buildings-wi/5hbp-c6bb).
+
+* Data from [2015-16 Guidance Counselor Reporting - Demographic Data API](https://data.cityofnewyork.us/Education/2015-16-Guidance-Counselor-Reporting-Demographic-D/iuvu-z276).
+
+* Data from [2013-2017 School Math Results - All API](https://data.cityofnewyork.us/Education/2013-2017-School-Math-Results-All/kha6-7i9i).
+
+### Cleaning and Merging Data 
 
 ```{r read_lead, message = FALSE, warning = FALSE}
 #read in lead data, restrict to NYC counties
@@ -57,8 +63,6 @@ lead_data <- GET("https://health.data.ny.gov/resource/ja9d-vnbi.csv", query = li
          number_of_outlets_result_greater, number_of_outlets, county, school_district)
 ```
 
-**Data from [Lead Testing in School Drinking Water: Buildings with Lead-Free Plumbing Beginning 2016 API](https://health.data.ny.gov/Health/Lead-Testing-in-School-Drinking-Water-Buildings-wi/5hbp-c6bb).**
-
 ```{r read_lead_free, message = FALSE, warning = FALSE}
 #read in lead data, restrict to NYC counties
 lead_free_data <- GET("https://health.data.ny.gov/resource/mn8r-98tx.csv", query = list(`$limit` = 5000)) %>% 
@@ -69,8 +73,6 @@ lead_free_data <- GET("https://health.data.ny.gov/resource/mn8r-98tx.csv", query
 ```
 
 ***THERE ARE NO SCHOOLS IN NEW YORK CITY WITH LEAD FREE PIPES***
-
-**Data from [2015-16 Guidance Counselor Reporting - Demographic Data API](https://data.cityofnewyork.us/Education/2015-16-Guidance-Counselor-Reporting-Demographic-D/iuvu-z276).**
 
 ```{r read_demo, message = FALSE, warning = FALSE}
 #read in demographic characteristics, create "school_number" to merge with lead data
@@ -93,8 +95,6 @@ demo_data <- GET("https://data.cityofnewyork.us/resource/vjn2-hei2.csv", query =
   mutate(school_number = str_replace(dbn, "^..", "")) #create school number to merge with lead data
 ```
 
-**Data from [2013-2017 School Math Results - All API](https://data.cityofnewyork.us/Education/2013-2017-School-Math-Results-All/kha6-7i9i).**
-
 ```{r read_scores, message = FALSE, warning = FALSE}
 #read in school math scores, restrict to 2017
 score_data <- GET("https://data.cityofnewyork.us/resource/stka-4ti9.csv", query = list(`$limit` = 25000)) %>% 
@@ -105,8 +105,6 @@ score_data <- GET("https://data.cityofnewyork.us/resource/stka-4ti9.csv", query 
 ```
 
 * School data is restricted to average scores for all grades. This way, schools do not repeat.
-
-### Merge data
 
 ```{r merge, message = FALSE, warning = FALSE}
 #merge demographic characteristics with math scores
@@ -121,7 +119,7 @@ all_data <- left_join(school_data, lead_data, by = "school_number") %>%
   select(-school_name.y, -dbn) %>% 
   mutate(location = str_replace(location, "POINT \\(", ""),
          location = str_replace(location, "\\)", "")) %>% 
-  separate(location, into = c("latitude", "longitude"), sep = " ") %>% #separate lat and long
+  separate(location, into = c("longitude", "latitude"), sep = " ") %>% #separate lat and long
   mutate(largest = pmax(white, black, asian, hispanic, other_race)) %>% 
   mutate(race = ifelse(largest == white, "White", #create categorical race category
                       ifelse(largest == black, "Black",
@@ -143,7 +141,7 @@ eda_data <- all_data %>%
 * minority = "Minority" if > 50% Black, Asian, Hispanic, Other; "White" if > 50% white
 * race = categorical, gives name of race variable with largest proportion
 
-## Exploratory analysis
+## Exploratory Analysis
 
 Visualizations, summaries, and exploratory statistical analyses. Justify the steps you took, and show any major changes to your ideas. 
 
@@ -170,13 +168,12 @@ summary(eda_data$lead_percent)
 summary(eda_data$poverty)
 
 eda_data %>% 
-  ggplot(aes(y = lead_percent, x = poverty)) + geom_hex() +
-  labs(x = "Percent of students in poverty", y = "Proportion of pipes with lead > 15 ppb",
-       title = "Poverty status and lead exposure")
+  ggplot(aes(y = lead_percent, x = poverty)) + geom_hex() + 
+  labs(x = "Proportion of students in poverty", y = "Proportion of pipes with lead > 15 ppb",
+       title = "Poverty Status and Lead Exposure")
 
 summary(eda_data$poverty)
 summary(eda_data$lead_percent)
-hist(eda_data$lead_percent)
 
 cor.test(eda_data$lead_percent, eda_data$poverty, method = "spearman", use = "complete.obs")
 ```
@@ -184,77 +181,13 @@ cor.test(eda_data$lead_percent, eda_data$poverty, method = "spearman", use = "co
 ### Lead and Minority Status
 
 ```{r minority}
-table(eda_data$minority)
-table(eda_data$race)
-
 eda_data %>%
-  ggplot(aes(y = lead_percent, x = race)) + geom_violin() +
+  ggplot(aes(y = lead_percent, x = race, fill = race)) + 
+  geom_violin() + scale_fill_brewer(palette = "Pastel2") +
   labs(x = "Race/Ethnicity", y = "Proportion of pipes with lead > 15 ppb",
-       title = "Race/Ethnicity and lead exposure")
-```
+       title = "Race/Ethnicity and Lead Exposure") +
+       theme(legend.position = "none")
 
-### Lead and Standardized Test Scores
-
-```{r test}
-summary(eda_data$lead_percent)
-summary(eda_data$mean_scale_score)
-
-eda_data %>% 
-  ggplot(aes(y = mean_scale_score, x = lead_percent)) + 
-  geom_hex() +
-  labs(y = "Standardized test math scores", x = "Proportion of pipes with lead > 15 ppb",
-       title = "Lead exposure and student math scores")
-
-summary(eda_data$mean_scale_score)
-hist(eda_data$mean_scale_score)
-
-eda_data %>% 
-  ggplot(aes(y = mean_scale_score, x = lead_percent)) + geom_point() + geom_smooth() +
-  labs(y = "Standardized test math scores", x = "Proportion of pipes with lead > 15 ppb",
-       title = "Lead exposure and student math scores")
-
-cor.test(eda_data$lead_percent, eda_data$mean_scale_score, method = "spearman", use = "complete.obs")
-```
-
-#### Race and Standardized Test Scores
-
-```{r test_race}
-table(eda_data$race)
-summary(eda_data$mean_scale_score)
-
-eda_data %>% 
-  ggplot(aes(y = mean_scale_score, x = race)) + 
-  geom_violin() +
-  labs(y = "Standardized test math scores", x = "Race/Ethnicity",
-       title = "Race/Ethnicity and student math scores")
-```
-
-#### Poverty and Standardized Test Scores
-
-```{r poverty_test}
-summary(eda_data$mean_scale_score)
-summary(eda_data$poverty)
-
-eda_data %>% 
-  ggplot(aes(y = mean_scale_score, x = poverty)) + geom_hex() +
-  labs(x = "Percent of students in poverty", y = "Standardized test math scores",
-       title = "Poverty status and student math scores")
-
-eda_data %>% 
-  ggplot(aes(y = mean_scale_score, x = poverty)) + geom_point() + geom_smooth(method = "lm") +
-  labs(x = "Percent of students in poverty", y = "Standardized test math scores",
-       title = "Poverty status and student math scores")
-
-cor.test(eda_data$mean_scale_score, eda_data$poverty, use = "complete.obs")
-```
-
-## Additional analysis
-
-If you undertake formal statistical analyses, describe these in detail
-
-### Lead and Minority Status Statistical Analyses
-
-```{r minority_stats}
 table(eda_data$minority)
 tapply(eda_data$lead_percent, eda_data$minority, mean, na.rm = TRUE)
 
@@ -268,12 +201,35 @@ kruskal.test(lead_percent ~ as.factor(race), data = eda_data)
 #non-parametric ANOVA
 ```
 
-#### Race and Standardized Test Scores Statistical Analyses
+### Lead and Standardized Test Scores
 
-```{r minority_test_stats}
+```{r test}
+summary(eda_data$lead_percent)
+summary(eda_data$mean_scale_score)
+
+eda_data %>% 
+  ggplot(aes(y = mean_scale_score, x = lead_percent)) + 
+  geom_hex() +
+  labs(y = "Standardized math test scores", x = "Proportion of pipes with lead > 15 ppb",
+       title = "Lead Exposure and Student Math Scores")
+
+summary(eda_data$mean_scale_score)
+
+cor.test(eda_data$lead_percent, eda_data$mean_scale_score, method = "spearman", use = "complete.obs")
+```
+
+#### Race and Standardized Test Scores
+
+```{r test_race}
+eda_data %>% 
+  ggplot(aes(y = mean_scale_score, x = race, fill = race)) + 
+  geom_violin() + scale_fill_brewer(palette = "Pastel2") +
+  labs(y = "Standardized math test scores", x = "Race/Ethnicity",
+       title = "Race/Ethnicity and student math scores") +
+   theme(legend.position = "none")
+
 table(eda_data$minority)
 tapply(eda_data$mean_scale_score, eda_data$minority, mean, na.rm = TRUE)
-hist(eda_data$mean_scale_score)
 
 table(eda_data$race)
 tapply(eda_data$mean_scale_score, eda_data$race, mean, na.rm = TRUE)
@@ -283,9 +239,16 @@ t.test(mean_scale_score ~ minority, data = eda_data)
 summary(aov(mean_scale_score ~ as.factor(race), data = eda_data))
 ```
 
-#### Poverty and Standardized Test Scores Statistical Analyses
+#### Poverty and Standardized Test Scores
 
-```{r poverty_test_stats}
+```{r poverty_test}
+eda_data %>% 
+  ggplot(aes(y = mean_scale_score, x = poverty)) + geom_hex() +
+  labs(x = "Proportion of students in poverty", y = "Standardized math test scores",
+       title = "Poverty Status and Student Math Scores")
+
+cor.test(eda_data$mean_scale_score, eda_data$poverty, use = "complete.obs")
+
 summary(eda_data$poverty)
 summary(eda_data$mean_scale_score)
 
@@ -295,6 +258,29 @@ eda_data %>%
   select(-std.error, -statistic) %>% 
   knitr::kable()
 ```
+
+## Mapping Lead Exposures
+
+```{r minority_schools}
+all_data %>%
+  filter(number_of_outlets_result_greater > 0,
+         minority == "Minority") %>% 
+  leaflet() %>% 
+  addTiles() %>% 
+  addMarkers(~longitude, ~latitude, popup = ~as.character(school_number), label = ~as.character(school_number))
+```
+
+Predominantly minorty schools with outlets that were all above 15 ppb.
+
+```{r white_schools}
+all_data %>%
+  filter(number_of_outlets_result_greater > 0,
+         minority == "White") %>% 
+  leaflet() %>% 
+  addTiles() %>% 
+  addMarkers(~longitude, ~latitude, popup = ~as.character(school_number), label = ~as.character(school_number))
+```
+
 
 ## Discussion
 
