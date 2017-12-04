@@ -39,13 +39,19 @@ What questions are you trying to answer? How did these questions evolve over the
 
 ## Data
 
-### Source
+### Sources
 
 All data was retrieved from the [Health Data NY Open Access Website](https://health.data.ny.gov/) API's.
 
-### Cleaning 
+* Data from [Lead Testing in School Drinking Water Sampling and Results: Most Recently Reported Beginning 2016 API](https://health.data.ny.gov/Health/Lead-Testing-in-School-Drinking-Water-Sampling-and/rkyy-fsv9).
 
-**Data [Lead Testing in School Drinking Water Sampling and Results: Most Recently Reported Beginning 2016 API](https://health.data.ny.gov/Health/Lead-Testing-in-School-Drinking-Water-Sampling-and/rkyy-fsv9).**
+* Data from [Lead Testing in School Drinking Water: Buildings with Lead-Free Plumbing Beginning 2016 API](https://health.data.ny.gov/Health/Lead-Testing-in-School-Drinking-Water-Buildings-wi/5hbp-c6bb).
+
+* Data from [2015-16 Guidance Counselor Reporting - Demographic Data API](https://data.cityofnewyork.us/Education/2015-16-Guidance-Counselor-Reporting-Demographic-D/iuvu-z276).
+
+*Data from [2013-2017 School Math Results - All API](https://data.cityofnewyork.us/Education/2013-2017-School-Math-Results-All/kha6-7i9i).
+
+### Cleaning and Merging Data 
 
 ```{r read_lead, message = FALSE, warning = FALSE}
 #read in lead data, restrict to NYC counties
@@ -57,8 +63,6 @@ lead_data <- GET("https://health.data.ny.gov/resource/ja9d-vnbi.csv", query = li
          number_of_outlets_result_greater, number_of_outlets, county, school_district)
 ```
 
-**Data from [Lead Testing in School Drinking Water: Buildings with Lead-Free Plumbing Beginning 2016 API](https://health.data.ny.gov/Health/Lead-Testing-in-School-Drinking-Water-Buildings-wi/5hbp-c6bb).**
-
 ```{r read_lead_free, message = FALSE, warning = FALSE}
 #read in lead data, restrict to NYC counties
 lead_free_data <- GET("https://health.data.ny.gov/resource/mn8r-98tx.csv", query = list(`$limit` = 5000)) %>% 
@@ -69,8 +73,6 @@ lead_free_data <- GET("https://health.data.ny.gov/resource/mn8r-98tx.csv", query
 ```
 
 ***THERE ARE NO SCHOOLS IN NEW YORK CITY WITH LEAD FREE PIPES***
-
-**Data from [2015-16 Guidance Counselor Reporting - Demographic Data API](https://data.cityofnewyork.us/Education/2015-16-Guidance-Counselor-Reporting-Demographic-D/iuvu-z276).**
 
 ```{r read_demo, message = FALSE, warning = FALSE}
 #read in demographic characteristics, create "school_number" to merge with lead data
@@ -93,8 +95,6 @@ demo_data <- GET("https://data.cityofnewyork.us/resource/vjn2-hei2.csv", query =
   mutate(school_number = str_replace(dbn, "^..", "")) #create school number to merge with lead data
 ```
 
-**Data from [2013-2017 School Math Results - All API](https://data.cityofnewyork.us/Education/2013-2017-School-Math-Results-All/kha6-7i9i).**
-
 ```{r read_scores, message = FALSE, warning = FALSE}
 #read in school math scores, restrict to 2017
 score_data <- GET("https://data.cityofnewyork.us/resource/stka-4ti9.csv", query = list(`$limit` = 25000)) %>% 
@@ -105,8 +105,6 @@ score_data <- GET("https://data.cityofnewyork.us/resource/stka-4ti9.csv", query 
 ```
 
 * School data is restricted to average scores for all grades. This way, schools do not repeat.
-
-### Merge data
 
 ```{r merge, message = FALSE, warning = FALSE}
 #merge demographic characteristics with math scores
@@ -176,7 +174,6 @@ eda_data %>%
 
 summary(eda_data$poverty)
 summary(eda_data$lead_percent)
-hist(eda_data$lead_percent)
 
 cor.test(eda_data$lead_percent, eda_data$poverty, method = "spearman", use = "complete.obs")
 ```
@@ -206,12 +203,6 @@ eda_data %>%
        title = "Lead exposure and student math scores")
 
 summary(eda_data$mean_scale_score)
-hist(eda_data$mean_scale_score)
-
-eda_data %>% 
-  ggplot(aes(y = mean_scale_score, x = lead_percent)) + geom_point() + geom_smooth() +
-  labs(y = "Standardized test math scores", x = "Proportion of pipes with lead > 15 ppb",
-       title = "Lead exposure and student math scores")
 
 cor.test(eda_data$lead_percent, eda_data$mean_scale_score, method = "spearman", use = "complete.obs")
 ```
@@ -237,11 +228,6 @@ summary(eda_data$poverty)
 
 eda_data %>% 
   ggplot(aes(y = mean_scale_score, x = poverty)) + geom_hex() +
-  labs(x = "Percent of students in poverty", y = "Standardized test math scores",
-       title = "Poverty status and student math scores")
-
-eda_data %>% 
-  ggplot(aes(y = mean_scale_score, x = poverty)) + geom_point() + geom_smooth(method = "lm") +
   labs(x = "Percent of students in poverty", y = "Standardized test math scores",
        title = "Poverty status and student math scores")
 
@@ -273,7 +259,6 @@ kruskal.test(lead_percent ~ as.factor(race), data = eda_data)
 ```{r minority_test_stats}
 table(eda_data$minority)
 tapply(eda_data$mean_scale_score, eda_data$minority, mean, na.rm = TRUE)
-hist(eda_data$mean_scale_score)
 
 table(eda_data$race)
 tapply(eda_data$mean_scale_score, eda_data$race, mean, na.rm = TRUE)
