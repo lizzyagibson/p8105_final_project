@@ -63,7 +63,7 @@ summary(eda_data$poverty)
 
 eda_data %>% 
   ggplot(aes(y = lead_percent, x = poverty)) + geom_hex() + 
-  labs(x = "Percent of students in poverty", y = "Proportion of pipes with lead > 15 ppb",
+  labs(x = "Proportion of students in poverty", y = "Proportion of pipes with lead > 15 ppb",
        title = "Poverty status and lead exposure")
 ```
 
@@ -97,7 +97,7 @@ summary(eda_data$mean_scale_score)
 eda_data %>% 
   ggplot(aes(y = mean_scale_score, x = lead_percent)) + 
   geom_hex() +
-  labs(y = "Standardized test math scores", x = "Proportion of pipes with lead > 15 ppb",
+  labs(y = "Standardized math test scores", x = "Proportion of pipes with lead > 15 ppb",
        title = "Lead exposure and student math scores")
 ```
 
@@ -110,8 +110,8 @@ summary(eda_data$mean_scale_score)
 eda_data %>% 
   ggplot(aes(y = mean_scale_score, x = race, fill = race)) + 
   geom_violin() + scale_fill_brewer(palette = "Pastel2") +
-  labs(y = "Standardized test math scores", x = "Race/Ethnicity",
-       title = "Race/Ethnicity exposure and student math scores") +
+  labs(y = "Standardized math test scores", x = "Race/Ethnicity",
+       title = "Race/Ethnicity and student math scores") +
    theme(legend.position = "none")
 ```
 
@@ -123,6 +123,6 @@ summary(eda_data$poverty)
 
 eda_data %>% 
   ggplot(aes(y = mean_scale_score, x = poverty)) + geom_hex() +
-  labs(x = "Percent of students in poverty", y = "Standardized test math scores",
+  labs(x = "Proportion of students in poverty", y = "Standardized math test scores",
        title = "Poverty status and student math scores")
 ```
