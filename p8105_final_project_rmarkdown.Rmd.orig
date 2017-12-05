@@ -34,7 +34,11 @@ theme_update(legend.position = "bottom")
 ## Motivation
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 A global issue that affects the lives of individuals globally, even within developed countries like the United States, is a lack of access to clean drinking water. Contaminants such as lead are not always visible to the eye and can be deleterious to health especially to susceptible populations like that of children. Although schools should allow children safe access to drinking water, recent evaluations have found schools throughout the US to have high levels of lead beyond the set standard. The goal of this project is to investigate exposure to lead for children throughout New York City schools related to race, poverty, and state mathematics test scores. 
+=======
+An issue that affects the lives of individuals globally, even within developed countries like the United States, is a lack of access to clean drinking water. Contaminants such as lead are not always visible to the eye and can be deleterious to health especially to susceptible populations like that of children. Although schools should allow children safe access to drinking water, recent evaluations have found schools throughout the US to have high levels of lead beyond the set standard of 15 ppb (parts per billion). The goal of this project is to investigate exposure to lead for children throughout New York City schools related to race, poverty, and standardized test scores at the school level. 
+>>>>>>> f6c1ef588f8235b24b3cc53b3ccd7b9c18820693
 =======
 An issue that affects the lives of individuals globally, even within developed countries like the United States, is a lack of access to clean drinking water. Contaminants such as lead are not always visible to the eye and can be deleterious to health especially to susceptible populations like that of children. Although schools should allow children safe access to drinking water, recent evaluations have found schools throughout the US to have high levels of lead beyond the set threshold of 15 parts per billion (ppb). The goal of this project is to investigate exposure to lead for children throughout New York City schools related to race, poverty, and standardized test scores at the school level. 
 >>>>>>> ceadc7e841dd794cff6bbaad70deafa827637ed8
@@ -302,6 +306,7 @@ all_data %>%
 
 ```{r leaf}
 
+
 pal_race <- colorFactor(c("#F8766D", "#00BFC4", "#C77CFF", "#00BA38"), all_data$race)
 
 pal_lead <- colorFactor(c("#C77CFF", "#00BFC4"), all_data$lead_med)
@@ -313,7 +318,7 @@ all_data %>%
   leaflet() %>% 
   addTiles() %>% 
   addCircles(~longitude, ~latitude, 
-             label = ~content, color = ~pal_lead(lead_med)) %>% 
+             label = ~content, color = ~pal_lead(lead_med), weight = 3, stroke = TRUE, radius = 40, fillOpacity = 1) %>% 
   addLegend(position = "bottomright", pal = pal_lead, values = ~lead_med,
             title = "Lead Proportion", opacity = 3)
 ```
@@ -329,7 +334,7 @@ all_data %>%
   addTiles() %>% 
   addCircles(~longitude, ~latitude, 
              label = ~content, color = ~pal_race(race),
-             radius = ~lead_percent * 30) %>% 
+             radius = ~lead_percent * 30, stroke = TRUE, fillOpacity = 1) %>% 
   addLegend(position = "bottomright", pal = pal_race, values = ~race,
             title = "Race/Ethnicity", opacity = 3)
 ```

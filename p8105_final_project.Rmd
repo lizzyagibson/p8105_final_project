@@ -12,12 +12,21 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%")
+
 library(tidyverse)
 library(janitor)
 library(rvest)
 library(httr)
 library(stringr)
+library(plotly)
 library(forcats)
+library(leaflet)
+#install.packages("rgdal")
+library(rgdal)
 ```
 
 ## Read Data
@@ -106,7 +115,7 @@ all_data <- left_join(school_data, lead_data, by = "school_number") %>%
   select(-school_name.y, -dbn) %>% 
   mutate(location = str_replace(location, "POINT \\(", ""),
          location = str_replace(location, "\\)", "")) %>% 
-  separate(location, into = c("latitude", "longitude"), sep = " ") %>% #separate lat and long
+  separate(location, into = c("longitude", "latitude"), sep = " ") %>% #separate lat and long
   mutate(largest = pmax(white, black, asian, hispanic, other_race)) %>% 
   mutate(race = ifelse(largest == white, "White", #create categorical race category
                       ifelse(largest == black, "Black",
@@ -114,7 +123,8 @@ all_data <- left_join(school_data, lead_data, by = "school_number") %>%
                                     ifelse(largest == asian, "Asian",
                                            ifelse(largest == other_race, "Other", "Missing"))))),
          latitude = as.numeric(latitude),
-         longitude = as.numeric(longitude))
+         longitude = as.numeric(longitude)) %>% 
+  mutate(lead = ifelse(lead_percent > median(lead_percent, na.rm = TRUE), "High", "Low"))
 
 write_csv(all_data, "./all_data.csv")
 ```
@@ -125,6 +135,35 @@ write_csv(all_data, "./all_data.csv")
 * minority = "Minority" if > 50% Black, Asian, Hispanic, Other; "White" if > 50% white
 * race = categorical, gives name of race variable with largest proportion
 
+```{r leaf}
+
+pal_race <- colorFactor(c("#F8766D", "#00BFC4", "#C77CFF", "#00BA38"), all_data$race)
+
+pal_lead <- colorFactor(c("#C77CFF", "#00BA38"), all_data$lead)
+  
+all_data %>%
+  mutate(content = str_c("School: ", school_number,
+                 "\n Race: ", race, 
+                 "\n Poverty: ", poverty)) %>% 
+  leaflet() %>% 
+  addTiles() %>% 
+  addCircles(~longitude, ~latitude, 
+             label = ~content, color = ~pal_lead(lead)) %>% 
+  addLegend(position = "bottomright", pal = pal_lead, values = ~lead,
+            title = "Lead Proportion", opacity = 3)
+
+all_data %>%
+  mutate(content = str_c("School: ", school_number,
+                 "\n Lead: ", round(lead_percent, 4), 
+                 "\n Poverty: ", poverty)) %>% 
+  leaflet() %>% 
+  addTiles() %>% 
+  addCircles(~longitude, ~latitude, 
+             label = ~content, color = ~pal_race(race),
+             radius = ~lead_percent * 30) %>% 
+  addLegend(position = "bottomright", pal = pal_race, values = ~race,
+            title = "Race/Ethnicity", opacity = 3)
+```
 
 
 
