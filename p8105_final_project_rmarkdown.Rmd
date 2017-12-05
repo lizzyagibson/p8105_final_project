@@ -276,28 +276,6 @@ Using a Pearson correlation (since math scores are quite normally distributed), 
 cor.test(eda_data$mean_scale_score, eda_data$poverty, use = "complete.obs")
 ```
 
-## Mapping Lead Exposures
-
-```{r minority_schools}
-all_data %>%
-  filter(number_of_outlets_result_greater > 0,
-         minority == "Minority") %>% 
-  leaflet() %>% 
-  addTiles() %>% 
-  addMarkers(~longitude, ~latitude, popup = ~as.character(school_number), label = ~as.character(school_number))
-```
-
-Predominantly minorty schools with outlets that were all above 15 ppb.
-
-```{r white_schools}
-all_data %>%
-  filter(number_of_outlets_result_greater > 0,
-         minority == "White") %>% 
-  leaflet() %>% 
-  addTiles() %>% 
-  addMarkers(~longitude, ~latitude, popup = ~as.character(school_number), label = ~as.character(school_number))
-```
-
 ### NYC Schools by Median Lead Exposure
 
 ```{r leaf}
