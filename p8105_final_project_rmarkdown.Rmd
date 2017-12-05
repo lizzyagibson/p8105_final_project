@@ -45,7 +45,20 @@ What questions are you trying to answer? How did these questions evolve over the
 
 ## Data
 
-The compiled dataset contains a total of 25 variables. The ethnic and poverty variables are express in proportions, that is, they show the proportion of students within a school that belong to a specific ethnic category or are considered to be below the poverty threshold (based on the U.S government poverty guidelines). The “number of outlets” variable refers to the total number of water outlets within a given school. “number of outlets greater” is the number of outlets with lead levels above 15ppb, and “number of outlets less” refers to the number of outlets with lead levels below 15ppb.  All schools have lead contaminated pipes, but they differ in the number of pipes that have lead levels about 15ppb. 
+The compiled dataset has a total of 25 variables and it includes observations from 1116 schools -elementary and middle schools. The ethnic and poverty variables are express in proportions, that is, they show the proportion of students within a school that belong to a specific ethnic category or are considered to be below the poverty threshold (based on the U.S government poverty guidelines). All schools have lead contaminated pipes, but they differ in the number of pipes that have lead levels about 15ppb
+
+## Data dictionary 
+
+* number of outlets = refers to the total number of water outlets within a given school. 
+* number of outlets greater” is the number of outlets with lead levels above 15ppb, and 
+* number of outlets less” refers to the number of outlets with lead levels below 15ppb
+
+Created variables
+
+* lead_percent = proportion of all outlets with lead level > 15 ppb
+* lead_med = binary, above or below the median value of lead proportion
+* minority = "Minority" if > 50% Black, Asian, Hispanic, Other; "White" if > 50% white
+* race = categorical, gives name of race variable with largest proportion
 
 ### Sources
 
@@ -147,9 +160,7 @@ eda_data <- all_data %>%
 
 ### Data Dictionary (created variables)
 
-* lead_percent = proportion of all outlets with lead level > 15 ppb
-* minority = "Minority" if > 50% Black, Asian, Hispanic, Other; "White" if > 50% white
-* race = categorical, gives name of race variable with largest proportion
+
 
 ## Exploratory Analysis
 
