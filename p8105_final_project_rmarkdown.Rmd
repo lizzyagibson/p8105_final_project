@@ -182,14 +182,14 @@ xtable::xtable(table1) %>%
 Table 1 shows differences across racial/ethnic majority schools in English language learners, poverty, students with disabilities, average math scores, and lead levels.
 
 ### Lead and Poverty
-
+Figure 1. shows the proportion of pipes within schools that contain lead measurements above 15ppb based on their poverty status. Even though it is not statistically significant, we see a pattern of increase number of pipes containing high levels of lead among those schools with higher proportion of students in the poverty level.    
 ```{r poverty}
 summary(eda_data$lead_percent)
 summary(eda_data$poverty)
 
 eda_data %>% 
   ggplot(aes(y = lead_percent, x = poverty)) + geom_hex() + 
-  labs(x = "Proportion of students in poverty", y = "Proportion of pipes with lead > 15 ppb",
+  labs(x = "Figure 1. Proportion of students in poverty", y = "Proportion of pipes with lead > 15 ppb",
        title = "Poverty Status and Lead Exposure")
 
 summary(eda_data$poverty)
@@ -203,12 +203,12 @@ cor.test(eda_data$lead_percent, eda_data$poverty, method = "spearman", use = "co
 Using a Spearman correlation for our skewed data, we see that lead exposure and poverty are not significantly correlated in NYC public schools (p = 0.20).
 
 ### Lead and Minority Status
-
+Figure 2. shows the distribution for the proportion of pipes containing lead levels above 15ppb based on the ethnic majority  of the school. The distribution is similar among schools where the majority of students are asian, hispanic, or white; however, schools with mainly black students have a distribution with higher proportion of pipes containing lead levels above 15ppb.
 ```{r minority}
 eda_data %>%
   ggplot(aes(y = lead_percent, x = race, fill = race)) + 
   geom_violin() + scale_fill_brewer(palette = "Pastel2") +
-  labs(x = "Race/Ethnicity", y = "Proportion of pipes with lead > 15 ppb",
+  labs(x = "Figure 2. Race/Ethnicity", y = "Proportion of pipes with lead > 15 ppb",
        title = "Race/Ethnicity and Lead Exposure") +
        theme(legend.position = "none")
 
@@ -222,7 +222,7 @@ kruskal.test(lead_percent ~ as.factor(race), data = eda_data)
 Using a non-parametric Kruskal Wallis test for differences in distributions across categories, we find that the differences in lead exposure across racial groups is statistically significant (p = 0.01). Predominantly black schools are more likely to face lead exposure through drinking water. 
 
 ### Lead and Standardized Test Scores
-
+Figure 3. shows the standardized test scores based on the proportion of pipes containing lead levels above 15ppb within a given school. The proportion of highly contaminated lead pipes within a school seems to not affect the overall students test performance.
 ```{r test}
 summary(eda_data$lead_percent)
 summary(eda_data$mean_scale_score)
@@ -230,7 +230,7 @@ summary(eda_data$mean_scale_score)
 eda_data %>% 
   ggplot(aes(y = mean_scale_score, x = lead_percent)) + 
   geom_hex() +
-  labs(y = "Standardized math test scores", x = "Proportion of pipes with lead > 15 ppb",
+  labs(y = "Figure 3. Standardized math test scores", x = "Proportion of pipes with lead > 15 ppb",
        title = "Lead Exposure and Student Math Scores")
 
 summary(eda_data$mean_scale_score)
@@ -241,13 +241,13 @@ cor.test(eda_data$lead_percent, eda_data$mean_scale_score, method = "spearman", 
 Again using a Spearman correlation, there is no significant correlation between lead exposure and standardized math test scores in NYC (p = 0.23).
 
 #### Race and Standardized Test Scores
-
+Figure 4. 
 ```{r test_race}
 eda_data %>% 
   ggplot(aes(y = mean_scale_score, x = race, fill = race)) + 
   geom_violin() + scale_fill_brewer(palette = "Pastel2") +
   labs(y = "Standardized math test scores", x = "Race/Ethnicity",
-       title = "Race/Ethnicity and student math scores") +
+       title = "Figure 4. Race/Ethnicity and student math scores") +
    theme(legend.position = "none")
 
 table(eda_data$race)
