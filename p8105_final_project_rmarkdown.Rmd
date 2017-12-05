@@ -12,6 +12,11 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%")
+
 library(tidyverse)
 library(janitor)
 library(rvest)
@@ -20,6 +25,7 @@ library(stringr)
 library(forcats)
 library(tableone)
 library(leaflet)
+library(rgdal)
 
 theme_set(theme_bw())
 theme_update(legend.position = "bottom")
@@ -127,12 +133,13 @@ all_data <- left_join(school_data, lead_data, by = "school_number") %>%
                                     ifelse(largest == asian, "Asian",
                                            ifelse(largest == other_race, "Other", "Missing"))))),
          latitude = as.numeric(latitude),
-         longitude = as.numeric(longitude))
+         longitude = as.numeric(longitude)) %>% 
+  mutate(lead_med = ifelse(lead_percent > median(lead_percent, na.rm = TRUE), "High", "Low"))
 
 eda_data <- all_data %>% 
   select(school_number, english_language_learners, hispanic, other_race, poverty,
          students_with_disabilities, white, asian, black, grade, mean_scale_score,
-         any_lead_free_buildings, lead_percent, minority, race)
+         any_lead_free_buildings, lead_percent, minority, race, lead_med)
 ```
 
 ### Data Dictionary (created variables)
@@ -148,8 +155,7 @@ Visualizations, summaries, and exploratory statistical analyses of lead, race, p
 ### Table One
 
 ```{r table_one, include = FALSE}
-continuous <- c("english_language_learners", 
-                "poverty","students_with_disabilities", 
+continuous <- c("poverty", 
                 "mean_scale_score", "lead_percent")
 
 categorical <- c("any_lead_free_buildings")
@@ -184,23 +190,17 @@ Table 1 shows differences across racial/ethnic majority schools in English langu
 ### Lead and Poverty
 
 ```{r poverty}
-summary(eda_data$lead_percent)
-summary(eda_data$poverty)
-
 eda_data %>% 
   ggplot(aes(y = lead_percent, x = poverty)) + geom_hex() + 
   labs(x = "Proportion of students in poverty", y = "Proportion of pipes with lead > 15 ppb",
        title = "Poverty Status and Lead Exposure")
-
-summary(eda_data$poverty)
-summary(eda_data$lead_percent)
 ```
+
+Using a Spearman correlation for our skewed data, we see that lead exposure and poverty are not significantly correlated in NYC public schools (p = 0.20).
 
 ```{r pov_corr}
 cor.test(eda_data$lead_percent, eda_data$poverty, method = "spearman", use = "complete.obs")
 ```
-
-Using a Spearman correlation for our skewed data, we see that lead exposure and poverty are not significantly correlated in NYC public schools (p = 0.20).
 
 ### Lead and Minority Status
 
@@ -211,34 +211,30 @@ eda_data %>%
   labs(x = "Race/Ethnicity", y = "Proportion of pipes with lead > 15 ppb",
        title = "Race/Ethnicity and Lead Exposure") +
        theme(legend.position = "none")
-
-table(eda_data$race)
-tapply(eda_data$lead_percent, eda_data$race, mean, na.rm = TRUE)
-
-kruskal.test(lead_percent ~ as.factor(race), data = eda_data)
-#non-parametric ANOVA
 ```
 
 Using a non-parametric Kruskal Wallis test for differences in distributions across categories, we find that the differences in lead exposure across racial groups is statistically significant (p = 0.01). Predominantly black schools are more likely to face lead exposure through drinking water. 
 
+```{r kruskal}
+kruskal.test(lead_percent ~ as.factor(race), data = eda_data)
+#non-parametric ANOVA
+```
+
 ### Lead and Standardized Test Scores
 
 ```{r test}
-summary(eda_data$lead_percent)
-summary(eda_data$mean_scale_score)
-
 eda_data %>% 
   ggplot(aes(y = mean_scale_score, x = lead_percent)) + 
   geom_hex() +
   labs(y = "Standardized math test scores", x = "Proportion of pipes with lead > 15 ppb",
        title = "Lead Exposure and Student Math Scores")
-
-summary(eda_data$mean_scale_score)
-
-cor.test(eda_data$lead_percent, eda_data$mean_scale_score, method = "spearman", use = "complete.obs")
 ```
 
 Again using a Spearman correlation, there is no significant correlation between lead exposure and standardized math test scores in NYC (p = 0.23).
+
+```{r math_corr}
+cor.test(eda_data$lead_percent, eda_data$mean_scale_score, method = "spearman", use = "complete.obs")
+```
 
 #### Race and Standardized Test Scores
 
@@ -249,14 +245,13 @@ eda_data %>%
   labs(y = "Standardized math test scores", x = "Race/Ethnicity",
        title = "Race/Ethnicity and student math scores") +
    theme(legend.position = "none")
-
-table(eda_data$race)
-tapply(eda_data$mean_scale_score, eda_data$race, mean, na.rm = TRUE)
-
-summary(aov(mean_scale_score ~ as.factor(race), data = eda_data))
 ```
 
 Using a parametric ANOVA test for differences in distributions across categories, we find that the differences in standardized math test scores across racial groups is statistically significant (p < 0.001). Predominantly black and Hispanic schools have lower math test scores, on average. 
+
+```{r anova}
+summary(aov(mean_scale_score ~ as.factor(race), data = eda_data))
+```
 
 #### Poverty and Standardized Test Scores
 
@@ -265,15 +260,13 @@ eda_data %>%
   ggplot(aes(y = mean_scale_score, x = poverty)) + geom_hex() +
   labs(x = "Proportion of students in poverty", y = "Standardized math test scores",
        title = "Poverty Status and Student Math Scores")
-
-cor.test(eda_data$mean_scale_score, eda_data$poverty, use = "complete.obs")
-
-summary(eda_data$poverty)
-summary(eda_data$mean_scale_score)
-
 ```
 
 Using a Pearson correlation (since math scores are quite normally distributed), poverty and standardized math test scores in NYC are significantly negatively correlated (p < 0.001), so that poorer schools, on average, perform worse on standardized tests.
+
+```{r pov_math_corr}
+cor.test(eda_data$mean_scale_score, eda_data$poverty, use = "complete.obs")
+```
 
 ## Mapping Lead Exposures
 
@@ -297,6 +290,41 @@ all_data %>%
   addMarkers(~longitude, ~latitude, popup = ~as.character(school_number), label = ~as.character(school_number))
 ```
 
+### NYC Schools by Median Lead Exposure
+
+```{r leaf}
+
+pal_race <- colorFactor(c("#F8766D", "#00BFC4", "#C77CFF", "#00BA38"), all_data$race)
+
+pal_lead <- colorFactor(c("#C77CFF", "#00BFC4"), all_data$lead_med)
+  
+all_data %>%
+  mutate(content = str_c("School: ", school_number,
+                 "\n Race: ", race, 
+                 "\n Poverty: ", poverty)) %>% 
+  leaflet() %>% 
+  addTiles() %>% 
+  addCircles(~longitude, ~latitude, 
+             label = ~content, color = ~pal_lead(lead_med)) %>% 
+  addLegend(position = "bottomright", pal = pal_lead, values = ~lead_med,
+            title = "Lead Proportion", opacity = 3)
+```
+
+### NYC Schools by Race/Ethnicity
+
+```{r leaf_2}
+all_data %>%
+  mutate(content = str_c("School: ", school_number,
+                 "\n Lead: ", round(lead_percent, 4), 
+                 "\n Poverty: ", poverty)) %>% 
+  leaflet() %>% 
+  addTiles() %>% 
+  addCircles(~longitude, ~latitude, 
+             label = ~content, color = ~pal_race(race),
+             radius = ~lead_percent * 30) %>% 
+  addLegend(position = "bottomright", pal = pal_race, values = ~race,
+            title = "Race/Ethnicity", opacity = 3)
+```
 
 ## Discussion
 
