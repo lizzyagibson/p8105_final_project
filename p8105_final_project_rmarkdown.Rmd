@@ -32,7 +32,11 @@ theme_update(legend.position = "bottom")
 ```
 
 ## Motivation
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> 42fe56808844ed78b7acc8b6d771f1c5fe690124
 An issue that affects the lives of individuals globally, even within developed countries like the United States, is a lack of access to clean drinking water. Contaminants such as lead are not always visible to the eye and can be deleterious to health especially to susceptible populations like that of children. Although schools should allow children safe access to drinking water, recent evaluations have found schools throughout the US to have high levels of lead beyond the set threshold of 15 parts per billion (ppb). The goal of this project is to investigate exposure to lead for children throughout New York City schools related to race, poverty, and standardized test scores at the school level. 
 
 ## Related Work
@@ -278,28 +282,6 @@ Using a Pearson correlation (since math scores are quite normally distributed), 
 
 ```{r pov_math_corr}
 cor.test(eda_data$mean_scale_score, eda_data$poverty, use = "complete.obs")
-```
-
-## Mapping Lead Exposures
-
-```{r minority_schools}
-all_data %>%
-  filter(number_of_outlets_result_greater > 0,
-         minority == "Minority") %>% 
-  leaflet() %>% 
-  addTiles() %>% 
-  addMarkers(~longitude, ~latitude, popup = ~as.character(school_number), label = ~as.character(school_number))
-```
-
-Predominantly minorty schools with outlets that were all above 15 ppb.
-
-```{r white_schools}
-all_data %>%
-  filter(number_of_outlets_result_greater > 0,
-         minority == "White") %>% 
-  leaflet() %>% 
-  addTiles() %>% 
-  addMarkers(~longitude, ~latitude, popup = ~as.character(school_number), label = ~as.character(school_number))
 ```
 
 ### NYC Schools by Median Lead Exposure
