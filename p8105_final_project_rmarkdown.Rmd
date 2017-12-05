@@ -196,7 +196,7 @@ xtable::xtable(table1) %>%
 Table 1 shows differences across racial/ethnic majority schools in English language learners, poverty, students with disabilities, average math scores, and lead levels.
 
 ### Lead and Poverty
-Figure 1. shows the proportion of pipes that contain lead measurements above 15ppb within a school based on the poverty status of the students. Even though it is not statistically significant, we see a pattern of increase number of pipes containing high levels of lead among those schools with higher proportion of students in the poverty level.    
+Figure 1. shows the proportion of pipes that contain lead measurements above 15ppb within a school based on the poverty status of the students. Even though it is not statistically significant, we see a pattern of increase number of pipes containing high levels of lead among those schools with higher proportion of students in the poverty level. 
 ```{r poverty}
 eda_data %>% 
   ggplot(aes(y = lead_percent, x = poverty)) + geom_hex() + 
@@ -313,7 +313,7 @@ all_data %>%
   leaflet() %>% 
   addTiles() %>% 
   addCircles(~longitude, ~latitude, 
-             label = ~content, color = ~pal_lead(lead_med)) %>% 
+             label = ~content, color = ~pal_lead(lead_med), fillOpacity = 3) %>% 
   addLegend(position = "bottomright", pal = pal_lead, values = ~lead_med,
             title = "Lead Proportion", opacity = 3)
 ```
@@ -329,7 +329,7 @@ all_data %>%
   addTiles() %>% 
   addCircles(~longitude, ~latitude, 
              label = ~content, color = ~pal_race(race),
-             radius = ~lead_percent * 30) %>% 
+             radius = ~lead_percent * 30, fillOpacity = 3) %>% 
   addLegend(position = "bottomright", pal = pal_race, values = ~race,
             title = "Race/Ethnicity", opacity = 3)
 ```
