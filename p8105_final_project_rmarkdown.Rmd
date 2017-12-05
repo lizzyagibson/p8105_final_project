@@ -33,7 +33,7 @@ theme_update(legend.position = "bottom")
 
 ## Motivation
 
-An issue that affects the lives of individuals globally, even within developed countries like the United States, is a lack of access to clean drinking water. Contaminants such as lead are not always visible to the eye and can be deleterious to health especially to susceptible populations like that of children. Although schools should allow children safe access to drinking water, recent evaluations have found schools throughout the US to have high levels of lead beyond the set standard of 15 ppb (parts per billion). The goal of this project is to investigate exposure to lead for children throughout New York City schools related to race, poverty, and standardized test scores at the school level. 
+An issue that affects the lives of individuals globally, even within developed countries like the United States, is a lack of access to clean drinking water. Contaminants such as lead are not always visible to the eye and can be deleterious to health especially to susceptible populations like that of children. Although schools should allow children safe access to drinking water, recent evaluations have found schools throughout the US to have high levels of lead beyond the set threshold of 15 parts per billion (ppb). The goal of this project is to investigate exposure to lead for children throughout New York City schools related to race, poverty, and standardized test scores at the school level. 
 
 ## Related Work
 
@@ -44,6 +44,8 @@ Anything that inspired you, such as a paper, a web site, or something we discuss
 What questions are you trying to answer? How did these questions evolve over the course of the project? What new questions did you consider in the course of your analysis?
 
 ## Data
+
+The compiled dataset contains a total of 25 variables. The ethnic and poverty variables are express in proportions, that is, they show the proportion of students within a school that belong to a specific ethnic category or are considered to be below the poverty threshold (based on the U.S government poverty guidelines). The “number of outlets” variable refers to the total number of water outlets within a given school. “number of outlets greater” is the number of outlets with lead levels above 15ppb, and “number of outlets less” refers to the number of outlets with lead levels below 15ppb.  All schools have lead containing pipes, but they differ in the number of pipes that have lead levels about 15ppb. 
 
 ### Sources
 
@@ -188,7 +190,7 @@ xtable::xtable(table1) %>%
 Table 1 shows differences across racial/ethnic majority schools in English language learners, poverty, students with disabilities, average math scores, and lead levels.
 
 ### Lead and Poverty
-Figure 1. shows the proportion of pipes within schools that contain lead measurements above 15ppb based on their poverty status. Even though it is not statistically significant, we see a pattern of increase number of pipes containing high levels of lead among those schools with higher proportion of students in the poverty level.    
+Figure 1. shows the proportion of pipes that contain lead measurements above 15ppb within a school based on the poverty status of the students. Even though it is not statistically significant, we see a pattern of increase number of pipes containing high levels of lead among those schools with higher proportion of students in the poverty level.    
 ```{r poverty}
 eda_data %>% 
   ggplot(aes(y = lead_percent, x = poverty)) + geom_hex() + 
@@ -203,7 +205,7 @@ cor.test(eda_data$lead_percent, eda_data$poverty, method = "spearman", use = "co
 ```
 
 ### Lead and Minority Status
-Figure 2. shows the distribution for the proportion of pipes containing lead levels above 15ppb based on the ethnic majority  of the school. The distribution is similar among schools where the majority of students are asian, hispanic, or white; however, schools with mainly black students have a distribution with higher proportion of pipes containing lead levels above 15ppb.
+Figure 2. shows the distribution for the proportion of pipes containing lead levels above 15ppb based on the ethnic majority of the school. The distribution is similar among schools where the majority of students are Asian, Hispanic, or White; however, schools with mainly black students have a distribution with higher proportion of pipes containing lead levels above 15ppb.
 ```{r minority}
 eda_data %>%
   ggplot(aes(y = lead_percent, x = race, fill = race)) + 
