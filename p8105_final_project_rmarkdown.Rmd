@@ -27,15 +27,17 @@ theme_update(legend.position = "bottom")
 
 ## Motivation
 
-A global issue that affects the lives of individuals globally, even within developed countries like the United States, is a lack of access to clean drinking water. Contaminants such as lead are not always visible to the eye and can be deleterious to health especially to susceptible populations like that of children. Although schools should allow children safe access to drinking water, recent evaluations have found schools throughout the US to have high levels of lead beyond the set standard. The goal of this project is to investigate exposure to lead for children throughout New York City schools related to race, poverty, disability, and ability to speak the native language. 
+A global issue that affects the lives of individuals globally, even within developed countries like the United States, is a lack of access to clean drinking water. Contaminants such as lead are not always visible to the eye and can be deleterious to health especially to susceptible populations like that of children. Although schools should allow children safe access to drinking water, recent evaluations have found schools throughout the US to have high levels of lead beyond the set standard. The goal of this project is to investigate exposure to lead for children throughout New York City schools related to race, poverty, and state mathematics test scores. 
 
 ## Related Work
 
-Anything that inspired you, such as a paper, a web site, or something we discussed in class.
+Exposure to lead in water has been an issue for a long time that has only recently received a lot of attention due to large scale exposures related to social justice issues. A recent article from [The New York Times](https://www.nytimes.com/2017/04/28/nyregion/new-york-schools-lead-water.html) describes how flushing of water outlets prior to testing temporarily decreased the amount of lead measured in NYC public schools. 
 
 ## Initial Questions
 
-What questions are you trying to answer? How did these questions evolve over the course of the project? What new questions did you consider in the course of your analysis?
+Our initial questions were whether or not exposure to lead in drinking water varies by race, poverty, disability, and ability to speak the native language in New York City public schools? And if so, by how much?
+
+Due to information provided in both datasets, our questions evolved to determine whether or not exposures to lead in drinking water in NYC public schools related to state test scores (specifically mathematics) in addition to race and poverty. 
 
 ## Data
 
