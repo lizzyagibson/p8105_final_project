@@ -45,7 +45,7 @@ What questions are you trying to answer? How did these questions evolve over the
 
 ## Data
 
-The compiled dataset contains a total of 25 variables. The ethnic and poverty variables are express in proportions, that is, they show the proportion of students within a school that belong to a specific ethnic category or are considered to be below the poverty threshold (based on the U.S government poverty guidelines). The “number of outlets” variable refers to the total number of water outlets within a given school. “number of outlets greater” is the number of outlets with lead levels above 15ppb, and “number of outlets less” refers to the number of outlets with lead levels below 15ppb.  All schools have lead containing pipes, but they differ in the number of pipes that have lead levels about 15ppb. 
+The compiled dataset contains a total of 25 variables. The ethnic and poverty variables are express in proportions, that is, they show the proportion of students within a school that belong to a specific ethnic category or are considered to be below the poverty threshold (based on the U.S government poverty guidelines). The “number of outlets” variable refers to the total number of water outlets within a given school. “number of outlets greater” is the number of outlets with lead levels above 15ppb, and “number of outlets less” refers to the number of outlets with lead levels below 15ppb.  All schools have lead contaminated pipes, but they differ in the number of pipes that have lead levels about 15ppb. 
 
 ### Sources
 
@@ -71,6 +71,8 @@ lead_data <- GET("https://health.data.ny.gov/resource/ja9d-vnbi.csv", query = li
          number_of_outlets_result_greater, number_of_outlets, county, school_district)
 ```
 
+***THERE ARE NO SCHOOLS IN NEW YORK CITY WITH LEAD FREE PIPES***
+Originally we wanted to include a non-exposed population to our study, but New York City does not have schools with lead free pipes.
 ```{r read_lead_free, message = FALSE, warning = FALSE}
 #read in lead data, restrict to NYC counties
 lead_free_data <- GET("https://health.data.ny.gov/resource/mn8r-98tx.csv", query = list(`$limit` = 5000)) %>% 
@@ -80,8 +82,7 @@ lead_free_data <- GET("https://health.data.ny.gov/resource/mn8r-98tx.csv", query
   select(school_number = school, county, school_district)
 ```
 
-***THERE ARE NO SCHOOLS IN NEW YORK CITY WITH LEAD FREE PIPES***
-
+. 
 ```{r read_demo, message = FALSE, warning = FALSE}
 #read in demographic characteristics, create "school_number" to merge with lead data
 demo_data <- GET("https://data.cityofnewyork.us/resource/vjn2-hei2.csv", query = list(`$limit` = 2000)) %>% 
@@ -239,7 +240,7 @@ cor.test(eda_data$lead_percent, eda_data$mean_scale_score, method = "spearman", 
 ```
 
 #### Race and Standardized Test Scores
-Figure 4. 
+Figure 4. shows the standaridezed test scores distributions for each ethnic group. For this, schools were grouped based on the ethnic category that has the larger percentage of students in a given school. Comparing figure 4 to figure 3, we see that even though the proportion of highly contaminated lead pipes across schools is similar, except for those schools with a  majority of black students, the test scores are much lower in those schools that have a majority of hispanic or african students.   
 ```{r test_race}
 eda_data %>% 
   ggplot(aes(y = mean_scale_score, x = race, fill = race)) + 
