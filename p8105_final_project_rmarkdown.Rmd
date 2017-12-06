@@ -47,7 +47,7 @@ Due to information provided in both datasets, our questions evolved to determine
 
 ## Data
 
-Our GitHub repo with all of our steps in this analysis can be found [here](https://github.com/lizzyagibson/p8105_final_project).
+Our GitHub repo of the steps in this analysis can be found [here](https://github.com/lizzyagibson/p8105_final_project).
 
 The compiled dataset has a total of 25 variables and it includes observations from 1116 elementary and middle schools in NYC. The racial/ethnic and poverty variables are express in proportions, that is, they show the proportion of students within a school that belong to a specific racial/ethnic category or are considered to be below the poverty threshold (based on the U.S government poverty guidelines). All schools have at least one lead contaminated water outlet, but not all schools have outlets with lead levels about 15 ppb. The standardized math test scores for each school were restricted to the average scores for all grades rather than to the scores for each grade. This way, each school has only one overall standardize math test score.  
 
