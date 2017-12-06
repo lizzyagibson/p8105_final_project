@@ -32,20 +32,19 @@ theme_update(legend.position = "bottom")
 ```
 
 ## Motivation
-<<<<<<< HEAD
- 
-=======
 
->>>>>>> 42fe56808844ed78b7acc8b6d771f1c5fe690124
-An issue that affects the lives of individuals globally, even within developed countries like the United States, is a lack of access to clean drinking water. Contaminants such as lead are not always visible to the eye and can be deleterious to health especially to susceptible populations like that of children. Although schools should allow children safe access to drinking water, recent evaluations have found schools throughout the US to have high levels of lead beyond the set threshold of 15 parts per billion (ppb). The goal of this project is to investigate exposure to lead for children throughout New York City schools related to race, poverty, and standardized test scores at the school level. 
+An issue that affects the lives of individuals globally, even within developed countries like the United States, is a lack of access to clean drinking water. Contaminants such as lead are not always visible to the eye and can be deleterious to health especially to susceptible populations like that of children. Although schools should allow children safe access to drinking water, recent evaluations have found schools throughout the US to have high levels of lead beyond the set threshold of 15 parts per billion (ppb). It is now well known that exposure to lead, even in low levels, has long lasting effects on neurodevelopment and cognition with an even greater effect when exposure occurs in an early age. Additionally, studies have show that disavantaged populations, such as minorities or those living under the poperty levels, are biasedly affected by lead exposure. The goal of this project is to investigate whether children exposure to lead throughout New York City schools is influence by race or economical status, and whether schools with higher levels of exposures have overall lower standardized math test scores. 
 
 ## Related Work
+[Review of the effects of lead exposure among children](http://www.nejm.org/doi/full/10.1056/NEJM199001113220203#t=article)
+
+[Pollutant Exposures Among Ethnic Minority and Poor Children](https://www.ncbi.nlm.nih.gov/pubmed/16611170)
 
 Exposure to lead in water has been an issue for a long time that has only recently received a lot of attention due to large scale exposures related to social justice issues. A recent article from [The New York Times](https://www.nytimes.com/2017/04/28/nyregion/new-york-schools-lead-water.html) describes how flushing of water outlets prior to testing temporarily decreased the amount of lead measured in NYC public schools. 
 
 ## Initial Questions
 
-Our initial questions were whether or not exposure to lead in drinking water varies by race, poverty, disability, and ability to speak the native language in New York City public schools? And if so, by how much?
+Our initial questions were whether or not exposure to lead through drinking water varies depending on race and economical status in New York City public schools? And if so, by how much?
 
 Due to information provided in both datasets, our questions evolved to determine whether or not exposures to lead in drinking water in NYC public schools related to state test scores (specifically mathematics) in addition to race and poverty. 
 
@@ -322,7 +321,8 @@ all_data %>%
 
 ## Discussion
 
-What were your findings? Are they what you expect? What insights into the data can you make?
+Based on our exploratory analysis there is not association between test scores and the number of water outlets containing lead levels above 15ppb. However, through our study we find out that the proportions of highly contaminated pipes tend to be higher in schools that have a large number of students with poverty status. Additionally, schools that are over 50% black tend to also have higher proportion of highly contaminated pipes relative to the other schools. Through our data analysis, we also observed that those schools that have a majority of Black or Hispanic students have lower test scores. These results are similar to the results we were expecting; however, the data-----   
+ What insights into the data can you make?
 
 
 
