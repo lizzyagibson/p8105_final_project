@@ -344,3 +344,9 @@ all_data %>%
 ## Discussion
 
 We initially asked whether lead exposure in school drinking water was associated with childhood poverty, race/ethnicity, or standardized test scores. Based on our exploratory analysis, we found no association between poverty and lead exposure or between lead exposure and test scores. Notably, schools with more black students had, on average, higher proportions of highly contaminated pipes relative to the other races (with white as the reference group). We further observed that those schools with black or Hispanic majorities and schools with increased poverty measures had lower test scores, and that minority majority schools were more likely to have a larger proportion of children in poverty than white schools. As environmental justice issues are intrinsically tied to social justice issues, we see minority children in NYC more likely to grow up in poverty, exposed to preventable toxins while at school, and denied the educational oppotunities that they need to thrive.
+
+## Shiny
+
+* The shiny flexdashboard for this project can be found [here](https://aabuawad.shinyapps.io/final_project_shiny/).
+
+* The GitHub repository for the shiny flexdashboard can be found [here](https://github.com/aabuawad/final_project_shiny).
