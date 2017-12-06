@@ -33,42 +33,46 @@ theme_update(legend.position = "bottom")
 
 ## Motivation
 
-An issue that affects the lives of individuals globally, even within developed countries like the United States, is a lack of access to clean drinking water. Contaminants such as lead are not always visible to the eye and can be deleterious to health especially to susceptible populations like that of children. Although schools should allow children safe access to drinking water, recent evaluations have found schools throughout the US to have high levels of lead beyond the set threshold of 15 parts per billion (ppb). The goal of this project is to investigate exposure to lead for children throughout New York City schools related to race, poverty, and standardized test scores at the school level. 
+An issue that affects the lives of individuals globally, even within developed countries like the United States, is a lack of access to clean drinking water. Contaminants such as lead are not always visible to the eye and can be deleterious to health especially to susceptible populations like that of children. Although schools should guarantee children safe access to drinking water, recent evaluations have found schools throughout the US to have high levels of lead beyond the set threshold of 15 parts per billion (ppb). It is now well known that exposure to lead, even in low levels, has long lasting effects on neurodevelopment and cognition with an even greater effect when exposure occurs at an early age. Additionally, studies have show that disavantaged populations, such as minorities or those living under the poperty levels, are disproportionately affected by lead exposure. The goal of this project is to investigate whether childhood exposure to lead throughout New York City schools is influence by race/ethnicity or economical status, and whether schools with higher levels of exposures have overall lower standardized math test scores. 
 
 ## Related Work
 
-Exposure to lead in water has been an issue for a long time that has only recently received a lot of attention due to large scale exposures related to social justice issues. A recent article from [The New York Times](https://www.nytimes.com/2017/04/28/nyregion/new-york-schools-lead-water.html) describes how flushing of water outlets prior to testing temporarily decreased the amount of lead measured in NYC public schools. 
+Exposure to lead in water has been an issue for a long time that has only recently received a lot of attention due to large scale exposures related to social justice issues. A recent article from [The New York Times](https://www.nytimes.com/2017/04/28/nyregion/new-york-schools-lead-water.html) describes how flushing of water outlets prior to testing temporarily decreased the amount of lead measured in NYC public schools. Two scientific reviews of unjust exposure and health effects are here: [Review of the effects of lead exposure among children](http://www.nejm.org/doi/full/10.1056/NEJM199001113220203#t=article) and [Pollutant Exposures Among Ethnic Minority and Poor Children](https://www.ncbi.nlm.nih.gov/pubmed/16611170)
 
 ## Initial Questions
 
-Our initial questions were whether or not exposure to lead in drinking water varies by race, poverty, disability, and ability to speak the native language in New York City public schools? And if so, by how much?
+Our initial questions were whether or not exposure to lead through drinking water varies depending on race/ethnicity or economical status in New York City public schools? And if so, by how much?
 
-Due to information provided in both datasets, our questions evolved to determine whether or not exposures to lead in drinking water in NYC public schools related to state test scores (specifically mathematics) in addition to race and poverty. 
+Due to information provided in both datasets, our questions evolved to determine whether or not exposures to lead in drinking water in NYC public schools related to state test scores (specifically mathematics) in addition to race/ethnicity and poverty. 
 
 ## Data
 
-The compiled dataset has a total of 25 variables and it includes observations from 1116 schools -elementary and middle schools. The ethnic and poverty variables are express in proportions, that is, they show the proportion of students within a school that belong to a specific ethnic category or are considered to be below the poverty threshold (based on the U.S government poverty guidelines). All schools have lead contaminated pipes, but they differ in the number of pipes that have lead levels about 15ppb
+Our GitHub repo of the steps in this analysis can be found [here](https://github.com/lizzyagibson/p8105_final_project).
 
-## Data dictionary 
+The compiled dataset has a total of 25 variables and it includes observations from 1116 elementary and middle schools in NYC. The racial/ethnic and poverty variables are express in proportions, that is, they show the proportion of students within a school that belong to a specific racial/ethnic category or are considered to be below the poverty threshold (based on the U.S government poverty guidelines). All schools have at least one lead contaminated water outlet, but not all schools have outlets with lead levels about 15 ppb. The standardized math test scores for each school were restricted to the average scores for all grades rather than to the scores for each grade. This way, each school has only one overall standardize math test score.  
 
-* number of outlets = refers to the total number of water outlets within a given school. 
-* number of outlets greater” is the number of outlets with lead levels above 15ppb, and 
-* number of outlets less” refers to the number of outlets with lead levels below 15ppb
+### Data dictionary 
 
-Created variables
+* number of outlets = the total number of water outlets within a given school. 
+* number of outlets greater = the number of outlets with lead levels above 15 ppb.
+* number of outlets less = refers to the number of outlets with lead levels below 15 ppb.
 
-* lead_percent = proportion of all outlets with lead level > 15 ppb
-* lead_med = binary, above or below the median value of lead proportion
-* minority = "Minority" if > 50% Black, Asian, Hispanic, Other; "White" if > 50% white
-* race = categorical, gives name of race variable with largest proportion
+#### Created variables
+
+* lead percent = proportion of all outlets with lead level > 15 ppb.
+* lead med = binary, above or below the median value of lead proportion.
+* minority = "Minority" if > 50% Black, Asian, Hispanic, Other; "White" if > 50% white.
+* race = categorical, gives name of race/ethnicity variable with largest proportion.
 
 ### Sources
 
-All data was retrieved from the [Health Data NY Open Access Website](https://health.data.ny.gov/) a [NYC Open Data](https://opendata.cityofnewyork.us/) API's.
+All data was retrieved from the [Health Data NY Open Access Website](https://health.data.ny.gov/) or [NYC Open Data](https://opendata.cityofnewyork.us/) API's.
 
 * Data from [Lead Testing in School Drinking Water Sampling and Results: Most Recently Reported Beginning 2016 API](https://health.data.ny.gov/Health/Lead-Testing-in-School-Drinking-Water-Sampling-and/rkyy-fsv9).
 
 * Data from [Lead Testing in School Drinking Water: Buildings with Lead-Free Plumbing Beginning 2016 API](https://health.data.ny.gov/Health/Lead-Testing-in-School-Drinking-Water-Buildings-wi/5hbp-c6bb).
+    * Originally we wanted to include a non-exposed population to our study, but New York City does not have any public schools with lead free pipes.
+
 
 * Data from [2015-16 Guidance Counselor Reporting - Demographic Data API](https://data.cityofnewyork.us/Education/2015-16-Guidance-Counselor-Reporting-Demographic-D/iuvu-z276).
 
@@ -84,21 +88,14 @@ lead_data <- GET("https://health.data.ny.gov/resource/ja9d-vnbi.csv", query = li
   filter(county %in% c("Queens", "Kings", "New York", "Bronx", "Richmond")) %>% 
   select(school_number = school, location, any_lead_free_buildings, number_of_outlets_result_less, 
          number_of_outlets_result_greater, number_of_outlets, county, school_district)
-```
 
-***THERE ARE NO SCHOOLS IN NEW YORK CITY WITH LEAD FREE PIPES***
-Originally we wanted to include a non-exposed population to our study, but New York City does not have schools with lead free pipes.
-```{r read_lead_free, message = FALSE, warning = FALSE}
 #read in lead data, restrict to NYC counties
 lead_free_data <- GET("https://health.data.ny.gov/resource/mn8r-98tx.csv", query = list(`$limit` = 5000)) %>% 
   content("parsed") %>% 
   clean_names() %>% 
   filter(county %in% c("Queens", "Kings", "New York", "Bronx", "Richmond")) %>% 
   select(school_number = school, county, school_district)
-```
 
-. 
-```{r read_demo, message = FALSE, warning = FALSE}
 #read in demographic characteristics, create "school_number" to merge with lead data
 demo_data <- GET("https://data.cityofnewyork.us/resource/vjn2-hei2.csv", query = list(`$limit` = 2000)) %>% 
   content("parsed") %>% 
@@ -117,20 +114,14 @@ demo_data <- GET("https://data.cityofnewyork.us/resource/vjn2-hei2.csv", query =
          students_with_disabilities = as.numeric(students_with_disabilities), 
          students_with_disabilities = round(students_with_disabilities, 4)) %>% # round proportions
   mutate(school_number = str_replace(dbn, "^..", "")) #create school number to merge with lead data
-```
 
-```{r read_scores, message = FALSE, warning = FALSE}
 #read in school math scores, restrict to 2017
 score_data <- GET("https://data.cityofnewyork.us/resource/stka-4ti9.csv", query = list(`$limit` = 25000)) %>% 
   content("parsed") %>% 
   clean_names() %>% 
   filter(year == 2017 & grade == "All Grades") %>% #so that testst scores are AFTER lead measurement
   select(dbn, school_name, grade, mean_scale_score)
-```
 
-* School data is restricted to average scores for all grades. This way, schools do not repeat.
-
-```{r merge, message = FALSE, warning = FALSE}
 #merge demographic characteristics with math scores
 school_data <- left_join(demo_data, score_data, by = c("dbn"))
 
@@ -160,13 +151,9 @@ eda_data <- all_data %>%
          any_lead_free_buildings, lead_percent, minority, race, lead_med)
 ```
 
-### Data Dictionary (created variables)
-
-
-
 ## Exploratory Analysis
 
-Visualizations, summaries, and exploratory statistical analyses of lead, race, poverty, and standardized test scores in New York City.
+Visualizations, summaries, and exploratory statistical analyses of lead, race/ethnicity, poverty, and standardized test scores in New York City.
 
 ### Table One
 
@@ -189,9 +176,7 @@ xtable::xtable(table1) %>%
   mutate(Variable = str_replace(Variable, " \\(mean \\(sd\\)\\)", ""),
          Variable = str_replace(Variable, " \\(median \\[IQR\\]\\)", ""),
          Variable = str_replace(Variable, "^n", "Number of schools"),
-         Variable = str_replace(Variable, "english_language_learners", "English language learners"),
          Variable = str_replace(Variable, "poverty", "Poverty"),
-         Variable = str_replace(Variable, "students_with_disabilities", "Students with disabilities"),
          Variable = str_replace(Variable, "mean_scale_score", "Mean math score"),
          Variable = str_replace(Variable, "lead_percent", "Lead proportion")) %>% 
   select(-level, -test) %>% 
@@ -201,10 +186,12 @@ xtable::xtable(table1) %>%
 1. All values are mean (standard deviation) except for lead, which is median [Inter-Quartile Range] because of its right skew.
 2. Mean math score is averaged over all grades.
 
-Table 1 shows differences across racial/ethnic majority schools in English language learners, poverty, students with disabilities, average math scores, and lead levels.
+Table 1 shows differences across racial/ethnic majority schools in poverty, average math scores, and lead levels.
 
 ### Lead and Poverty
-Figure 1. shows the proportion of pipes that contain lead measurements above 15ppb within a school based on the poverty status of the students. Even though it is not statistically significant, we see a pattern of increase number of pipes containing high levels of lead among those schools with higher proportion of students in the poverty level. 
+
+**Figure 1.** shows the proportion of pipes that contain lead measurements above 15 ppb within a school based on the poverty status of the students. Even though it is not statistically significant, we see a pattern of increase number of pipes containing high levels of lead among those schools with higher proportion of students below the poverty level. 
+
 ```{r poverty}
 eda_data %>% 
   ggplot(aes(y = lead_percent, x = poverty)) + geom_hex() + 
@@ -219,7 +206,9 @@ cor.test(eda_data$lead_percent, eda_data$poverty, method = "spearman", use = "co
 ```
 
 ### Lead and Minority Status
-Figure 2. shows the distribution for the proportion of pipes containing lead levels above 15ppb based on the ethnic majority of the school. The distribution is similar among schools where the majority of students are Asian, Hispanic, or White; however, schools with mainly black students have a distribution with higher proportion of pipes containing lead levels above 15ppb.
+
+**Figure 2.** shows the distribution for the proportion of pipes containing lead levels above 15 ppb based on the racial/ethnic majority of the school. The distribution is similar among schools where the majority of students are Asian, Hispanic, or White; however, schools with mainly black students have a distribution with higher proportion of pipes containing lead levels above 15 ppb.
+
 ```{r minority}
 eda_data %>%
   ggplot(aes(y = lead_percent, x = race, fill = race)) + 
@@ -237,7 +226,9 @@ kruskal.test(lead_percent ~ as.factor(race), data = eda_data)
 ```
 
 ### Lead and Standardized Test Scores
-Figure 3. shows the standardized test scores based on the proportion of pipes containing lead levels above 15ppb within a given school. The proportion of highly contaminated lead pipes within a school seems to not affect the overall students test performance.
+
+**Figure 3.** shows the standardized test scores based on the proportion of pipes containing lead levels above 15 ppb within a given school. The proportion of highly contaminated lead pipes within a school seems to not affect the overall students test performance.
+
 ```{r test}
 eda_data %>% 
   ggplot(aes(y = mean_scale_score, x = lead_percent)) + 
@@ -252,8 +243,14 @@ Again using a Spearman correlation, there is no significant correlation between 
 cor.test(eda_data$lead_percent, eda_data$mean_scale_score, method = "spearman", use = "complete.obs")
 ```
 
+While standardized test scores are not associated with lead exposure, they are associated with both race/ethnicity and poverty (through multiple and varied pathways).
+
+### Race, Poverty, and Standardized Test Scores
+
 #### Race and Standardized Test Scores
-Figure 4. shows the standaridezed test scores distributions for each ethnic group. For this, schools were grouped based on the ethnic category that has the larger percentage of students in a given school. Comparing figure 4 to figure 3, we see that even though the proportion of highly contaminated lead pipes across schools is similar, except for those schools with a  majority of black students, the test scores are much lower in those schools that have a majority of hispanic or african students.   
+
+**Figure 4.** shows the standardized test scores distributions for each racial/ethnic group. For this, schools were grouped based on the racial/ethnic category with the largest percentage of students in a given school. Comparing figure 4 to figure 3, we see that even though the proportion of highly contaminated lead pipes across schools is similar, except for those schools with a  majority of black students, the test scores are much lower in those schools that have a majority of hispanic or african students.   
+
 ```{r test_race}
 eda_data %>% 
   ggplot(aes(y = mean_scale_score, x = race, fill = race)) + 
@@ -261,6 +258,7 @@ eda_data %>%
   labs(y = "Standardized math test scores", x = "Race/Ethnicity",
        title = "Figure 4. Race/Ethnicity and student math scores") +
    theme(legend.position = "none")
+
 ```
 
 Using a parametric ANOVA test for differences in distributions across categories, we find that the differences in standardized math test scores across racial groups is statistically significant (p < 0.001). Predominantly black and Hispanic schools have lower math test scores, on average. 
@@ -271,6 +269,8 @@ summary(aov(mean_scale_score ~ as.factor(race), data = eda_data))
 
 #### Poverty and Standardized Test Scores
 
+**Figure 5.** shows the standardized test scores distributions by the proportion of students in poverty. As the proportion of students in poverty increases, standardized math test scores decrease.
+
 ```{r poverty_test}
 eda_data %>% 
   ggplot(aes(y = mean_scale_score, x = poverty)) + geom_hex() +
@@ -278,16 +278,37 @@ eda_data %>%
        title = "Poverty Status and Student Math Scores")
 ```
 
-Using a Pearson correlation (since math scores are quite normally distributed), poverty and standardized math test scores in NYC are significantly negatively correlated (p < 0.001), so that poorer schools, on average, perform worse on standardized tests.
+Using a Pearson correlation (since math test scores are quite normally distributed), poverty and standardized math test scores in NYC are significantly negatively correlated (p < 0.001), so that poorer schools, on average, perform worse on standardized tests.
 
 ```{r pov_math_corr}
 cor.test(eda_data$mean_scale_score, eda_data$poverty, use = "complete.obs")
 ```
 
+#### Race/Ethnicity and Poverty
+
+**Figure 6.** shows the poverty status distribution for each race/ethnicity. Comparing figure 6 to figure 3, we see that even though the proportion of highly contaminated lead pipes across schools is similar, except for those schools with a majority of black students, schools with black, Hispanic, or Asian majorities have, on average, more students in poverty than schools with white majorities. All the schools with fewer than 20% of the students in poverty have majority white students.
+
+```{r race_pov}
+eda_data %>% 
+  ggplot(aes(y = poverty, x = race, fill = race)) + 
+  geom_violin() + scale_fill_brewer(palette = "Pastel2") +
+  labs(y = "Proportion in Poverty", x = "Race/Ethnicity",
+       title = "Figure 6. Race/Ethnicity and poverty status") +
+   theme(legend.position = "none")
+```
+
+Using a non-parametric Kruskal Wallis test for differences in distributions across categories, we find that the differences in poverty proportion across racial groups is statistically significant (p = 0.01). Predominantly black, Hispanic, and Asian schools have, on average, more students in poverty than majority white schools.
+
+```{r kruskal_race_pov}
+kruskal.test(poverty ~ as.factor(race), data = eda_data)
+#non-parametric ANOVA
+```
+
+## Spatial Visualization
+
 ### NYC Schools by Median Lead Exposure
 
 ```{r leaf}
-
 pal_race <- colorFactor(c("#F8766D", "#00BFC4", "#C77CFF", "#00BA38"), all_data$race)
 
 pal_lead <- colorFactor(c("#C77CFF", "#00BFC4"), all_data$lead_med)
@@ -322,8 +343,4 @@ all_data %>%
 
 ## Discussion
 
-What were your findings? Are they what you expect? What insights into the data can you make?
-
-
-
-
+We initially asked whether lead exposure in school drinking water was associated with childhood poverty, race/ethnicity, or standardized test scores. Based on our exploratory analysis, we found no association between poverty and lead exposure or between lead exposure and test scores. Notably, schools with more black students had, on average, higher proportions of highly contaminated pipes relative to the other races (with white as the reference group). We further observed that those schools with black or Hispanic majorities and schools with increased poverty measures had lower test scores, and that minority majority schools were more likely to have a larger proportion of children in poverty than white schools. As environmental justice issues are intrinsically tied to social justice issues, we see minority children in NYC more likely to grow up in poverty, exposed to preventable toxins while at school, and denied the educational oppotunities that they need to thrive.
