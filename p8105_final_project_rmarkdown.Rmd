@@ -37,7 +37,7 @@ An issue that affects the lives of individuals globally, even within developed c
 
 ## Related Work
 
-Exposure to lead in water has been an issue for a long time that has only recently received a lot of attention due to large scale exposures related to social justice issues. A recent article from [The New York Times](https://www.nytimes.com/2017/04/28/nyregion/new-york-schools-lead-water.html) describes how flushing of water outlets prior to testing temporarily decreased the amount of lead measured in NYC public schools. Two scientific reviews of unjust exposure and health effects are here: [Review of the effects of lead exposure among children](http://www.nejm.org/doi/full/10.1056/NEJM199001113220203#t=article) and [Pollutant Exposures Among Ethnic Minority and Poor Children](https://www.ncbi.nlm.nih.gov/pubmed/16611170)
+Exposure to lead in water has been an issue for a long time that has only recently received a lot of attention due to large scale exposures related to social justice issues. A recent article from [The New York Times](https://www.nytimes.com/2017/04/28/nyregion/new-york-schools-lead-water.html) describes how flushing of water outlets prior to testing temporarily decreased the amount of lead measured in NYC public schools. Two scientific reviews related to lead exposure and its health effects are here: [Review of the effects of lead exposure among children](http://www.nejm.org/doi/full/10.1056/NEJM199001113220203#t=article) and [Pollutant Exposures Among Ethnic Minority and Poor Children](https://www.ncbi.nlm.nih.gov/pubmed/16611170)
 
 ## Initial Questions
 
