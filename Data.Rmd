@@ -2,8 +2,17 @@
 title: "Data description"
 ---
 
-### About this site
+### About the data
 
-Sometimes you need to say a bit about the site -- how it was made, where it's hosted, where the source code can be found. 
+For our exploratory study we used four datasets. All data was retrieved from the [Health Data NY Open Access Website](https://health.data.ny.gov/) or [NYC Open Data](https://opendata.cityofnewyork.us/) API's.
 
-If this is for a project or analysis, I recommend giving some details about the R package versions that you used to create the content.
+
+* Data from [Lead Testing in School Drinking Water Sampling and Results: Most Recently Reported Beginning 2016 API](https://health.data.ny.gov/Health/Lead-Testing-in-School-Drinking-Water-Sampling-and/rkyy-fsv9) was use to create the proportion of..... 
+
+* Originally we wanted to include a non-exposed population to our study, but New York City does not have any public schools with lead free pipes as we discovered after analysing------ Data from [Lead Testing in School Drinking Water: Buildings with Lead-Free Plumbing Beginning 2016 API](https://health.data.ny.gov/Health/Lead-Testing-in-School-Drinking-Water-Buildings-wi/5hbp-c6bb).
+
+* Data from [2015-16 Guidance Counselor Reporting - Demographic Data API](https://data.cityofnewyork.us/Education/2015-16-Guidance-Counselor-Reporting-Demographic-D/iuvu-z276).
+
+* Data from [2013-2017 School Math Results - All API](https://data.cityofnewyork.us/Education/2013-2017-School-Math-Results-All/kha6-7i9i).
+
+
