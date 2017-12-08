@@ -27,7 +27,7 @@ All data was retrieved from the [Health Data NY Open Access Website](https://hea
 <br>
 Figure 1. shows the proportion of pipes that contain lead measurements above 15 ppb within a school based on the poverty status of the students. Even though it is not statistically significant, we see a pattern of increase number of pipes containing high levels of lead among those schools with higher proportion of students below the poverty level. 
 
-<br><img src="images/poverty_lead.png" style="width:65%><br>
+<br><img src="images/Poverty_lead.png" style="width:65%><br>
 
 ####
 **Lead and Minority Status**
