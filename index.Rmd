@@ -35,6 +35,8 @@ Figure 2. shows the distribution for the proportion of pipes containing lead lev
 
 <br><img src="images/ethnicity_lead_exposure.png" style="width:65%><br>
 
+
+
 ###Discussion:
 <br>
 Based on our exploratory analysis, we found no association between poverty and lead exposure or between lead exposure and test scores. Notably, schools with more black students had, on average, higher proportions of highly contaminated pipes relative to the other races (with white as the reference group). We further observed that those schools with black or Hispanic majorities and schools with increased poverty measures had lower test scores. As environmental justice issues are intrinsically tied to social justice issues, we see minority children in NYC more likely to grow up in poverty, exposed to preventable toxins while at school, and denied the educational oppotunities that they need to thrive.
