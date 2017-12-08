@@ -1,5 +1,5 @@
 ---
-title: "Exploratory graphs"
+title: "Exploratory Data Analysis"
 ---
 
 <br>

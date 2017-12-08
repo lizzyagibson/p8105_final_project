@@ -5,10 +5,12 @@ navbar:
   right:
     - text: "Data"
       href: Data.html
+    - text: "Explore"
+      href: Exploratory_graphs.html
+    - text: "Screencast"
+      href: final_project_youtube.html
     - text: "Shinyapp"
       href: https://aabuawad.shinyapps.io/final_project_shiny/
-    - text: "Exploratory graphs"
-      href: Exploratory_graphs.html
     - icon: fa-envelope fa-lg
       href: mailto:<Yn2295@columbia.edu>
     - icon: fa-github fa-lg

@@ -1,0 +1,15 @@
+---
+title: "Project Screencast"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Exposure to Lead in NYC Public School Water
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/VCaCc4Wtje8" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe>
+  
+  
+This screencast illustrates our project, emphasizing our motivation, questions, and results.
