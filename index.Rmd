@@ -31,7 +31,10 @@ Figure 1. shows the proportion of pipes that contain lead measurements above 15 
 ####
 **Lead and Minority Status**
 <br>
-Figure 2.shows the distribution for the proportion of pipes containing lead levels above 15 ppb based on the racial/ethnic majority of the school. The distribution is similar among schools where the majority of students are Asian, Hispanic, or White; however, schools with mainly black students have a distribution with higher proportion of pipes containing lead levels above 15 ppb.
+Figure 2. shows the distribution for the proportion of pipes containing lead levels above 15 ppb based on the racial/ethnic majority of the school. The distribution is similar among schools where the majority of students are Asian, Hispanic, or White; however, schools with mainly black students have a distribution with higher proportion of pipes containing lead levels above 15 ppb.
+
+<br><img src="images/ethnicity_lead_exposure.png" style="width:65%><br>
+
+###Discussion:
 <br>
-<img src="images/ethnicity_lead_exposure.png" style="width:65% </left>
-<br>
+Based on our exploratory analysis, we found no association between poverty and lead exposure or between lead exposure and test scores. Notably, schools with more black students had, on average, higher proportions of highly contaminated pipes relative to the other races (with white as the reference group). We further observed that those schools with black or Hispanic majorities and schools with increased poverty measures had lower test scores. As environmental justice issues are intrinsically tied to social justice issues, we see minority children in NYC more likely to grow up in poverty, exposed to preventable toxins while at school, and denied the educational oppotunities that they need to thrive.
