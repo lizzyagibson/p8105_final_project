@@ -7,12 +7,11 @@ title: "Data description"
 For our exploratory study we used four datasets. All data was retrieved from the [Health Data NY Open Access Website](https://health.data.ny.gov/) or [NYC Open Data](https://opendata.cityofnewyork.us/) API's.
 
 
-* Data from [Lead Testing in School Drinking Water Sampling and Results: Most Recently Reported Beginning 2016 API](https://health.data.ny.gov/Health/Lead-Testing-in-School-Drinking-Water-Sampling-and/rkyy-fsv9) was use to create the proportion of..... 
+* Data from [Lead Testing in School Drinking Water Sampling and Results: Most Recently Reported Beginning 2016 API](https://health.data.ny.gov/Health/Lead-Testing-in-School-Drinking-Water-Sampling-and/rkyy-fsv9) was used to obtain the number of outlets containing lead > 15 ppb and the total number of outlets tested to create the proportion of outlets with high lead levels per school.
 
-* Originally we wanted to include a non-exposed population to our study, but New York City does not have any public schools with lead free pipes as we discovered after analysing------ Data from [Lead Testing in School Drinking Water: Buildings with Lead-Free Plumbing Beginning 2016 API](https://health.data.ny.gov/Health/Lead-Testing-in-School-Drinking-Water-Buildings-wi/5hbp-c6bb).
+* Originally we wanted to include a non-exposed population to our study, but New York City does not have any public schools with lead free pipes, as we discovered after analysing data from [Lead Testing in School Drinking Water: Buildings with Lead-Free Plumbing Beginning 2016 API](https://health.data.ny.gov/Health/Lead-Testing-in-School-Drinking-Water-Buildings-wi/5hbp-c6bb).
 
-* Data from [2015-16 Guidance Counselor Reporting - Demographic Data API](https://data.cityofnewyork.us/Education/2015-16-Guidance-Counselor-Reporting-Demographic-D/iuvu-z276).
+* Data from [2015-16 Guidance Counselor Reporting - Demographic Data API](https://data.cityofnewyork.us/Education/2015-16-Guidance-Counselor-Reporting-Demographic-D/iuvu-z276) was used to obtain proportion of students at each school living in poverty and race/ethnicity proportions (black, white, Asian, Hispanic, and other race) to create a race variable that assigned each school its largest racial/ethnic proportion.
 
-* Data from [2013-2017 School Math Results - All API](https://data.cityofnewyork.us/Education/2013-2017-School-Math-Results-All/kha6-7i9i).
-
+* Data from [2013-2017 School Math Results - All API](https://data.cityofnewyork.us/Education/2013-2017-School-Math-Results-All/kha6-7i9i) was used to obtain standardized math test scores for all grades in NYC schools.
 
